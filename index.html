@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Comparar Placas de Vídeo — A vs B (preço e benefícios)</title>
+<meta name="description" content="Escolha duas placas de vídeo e veja preço, desempenho em jogos e benefícios lado a lado. Dados do mercado brasileiro." />
+<style>
+  :root{
+    --bg:#0a0d14;
+    --panel:#121a2b;
+    --panel-2:#0e1524;
+    --border:rgba(255,255,255,.10);
+    --txt:#eef2ff;
+    --dim:#94a1bf;
+    --faint:#6b7691;
+    --nvidia:#76b900;
+    --amd:#ed1c24;
+    --win:#22c55e;
+    --gold:#fbbf24;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;padding:26px 18px 60px;
+    font-family:'Segoe UI',system-ui,-apple-system,Roboto,sans-serif;
+    color:var(--txt);line-height:1.5;
+    background:
+      radial-gradient(900px 460px at 12% -10%, rgba(118,185,0,.11), transparent 60%),
+      radial-gradient(900px 460px at 88% -10%, rgba(237,28,36,.12), transparent 60%),
+      var(--bg);
+  }
+  .wrap{max-width:1040px;margin:0 auto}
+
+  /* ---------- topo ---------- */
+  .topo{text-align:center;margin-bottom:24px}
+  .topo h1{margin:0 0 6px;font-size:clamp(21px,3.4vw,30px);letter-spacing:-.02em;font-weight:800}
+  .topo h1 .nv{color:var(--nvidia)} .topo h1 .am{color:var(--amd)}
+  .topo p{margin:0;color:var(--dim);font-size:13.5px}
+
+  /* ---------- seletor ---------- */
+  .pick-row{display:grid;grid-template-columns:1fr 52px 1fr;gap:12px;align-items:end;margin-bottom:10px}
+  .pick label{display:block;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--faint);margin-bottom:6px}
+  select{
+    width:100%;padding:14px 14px;font-size:16px;font-weight:700;
+    background:var(--panel-2);color:var(--txt);font-family:inherit;
+    border:1px solid var(--border);border-radius:12px;cursor:pointer;
+  }
+  select:focus{outline:none;border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,248,.16)}
+
+  .mid{display:flex;flex-direction:column;align-items:center;gap:8px;padding-bottom:2px}
+  .vs{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:13px;color:#fff;
+      background:linear-gradient(135deg,var(--nvidia),var(--amd))}
+  .swap{width:34px;height:34px;border-radius:10px;background:var(--panel-2);border:1px solid var(--border);
+        color:var(--dim);font-size:16px;cursor:pointer;line-height:1;display:grid;place-items:center}
+  .swap:hover{color:#fff;border-color:#38bdf8}
+
+  /* ---------- resolução ---------- */
+  .res-row{display:flex;justify-content:center;align-items:center;gap:8px;margin:18px 0 22px;flex-wrap:wrap}
+  .res-row .rl{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+  .res-btn{background:var(--panel-2);border:1px solid var(--border);color:var(--dim);
+    padding:7px 15px;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
+  .res-btn:hover{color:#fff}
+  .res-btn.on{background:rgba(56,189,248,.16);border-color:rgba(56,189,248,.6);color:#e0f2fe}
+
+  /* ---------- veredito ---------- */
+  .verdict{background:var(--panel);border:1px solid var(--border);border-radius:14px;
+    padding:16px 18px;margin-bottom:18px;font-size:15px;text-align:center}
+  .verdict b{color:var(--gold)}
+
+  /* ---------- cabeçalho das duas placas ---------- */
+  .heads{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+  .head-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px;position:relative;overflow:hidden}
+  .head-card::after{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:var(--nvidia)}
+  .head-card.am::after{background:var(--amd)}
+  .head-card.am{border-color:rgba(237,28,36,.28)}
+  .head-card .marca{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+  .head-card .nome{font-size:17px;font-weight:800;margin:3px 0 3px;letter-spacing:-.01em}
+  .head-card .spec{font-size:11.5px;color:#7f8aa3;margin-bottom:9px}
+  .head-card .preco{font-size:26px;font-weight:800;letter-spacing:-.02em}
+  .head-card .loja{font-size:11.5px;color:var(--faint)}
+  .head-card .diff{display:inline-block;margin-top:10px;font-size:12px;font-weight:700;
+    background:rgba(34,197,94,.14);color:#86efac;border:1px solid rgba(34,197,94,.35);
+    padding:3px 10px;border-radius:999px}
+  .head-card .diff.neutro{background:rgba(255,255,255,.05);color:var(--dim);border-color:var(--border)}
+
+  /* ---------- links de compra ---------- */
+  .btn-buy{display:inline-flex;align-items:center;gap:7px;margin-top:14px;
+    background:linear-gradient(135deg,#16a34a,#22c55e);color:#04140a;
+    font-weight:800;font-size:13.5px;padding:10px 15px;border-radius:10px;
+    text-decoration:none;letter-spacing:-.01em}
+  .btn-buy:hover{filter:brightness(1.09)}
+  .loja-lbl{margin-top:12px;font-size:10px;font-weight:800;letter-spacing:.09em;
+    text-transform:uppercase;color:#4b5568}
+  .loja-links{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:5px}
+  .loja-links a{font-size:12.5px;color:#7dd3fc;text-decoration:none;
+    border-bottom:1px dotted rgba(125,211,252,.45);white-space:nowrap}
+  .loja-links a:hover{color:#fff;border-bottom-color:#fff}
+
+  /* ---------- tabela de comparação ---------- */
+  .cmp{background:var(--panel);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+  .row{display:grid;grid-template-columns:1fr 230px 1fr;align-items:center;gap:8px;
+       padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.055)}
+  .row:last-child{border-bottom:0}
+  .row .lbl{text-align:center;font-size:11.5px;font-weight:700;letter-spacing:.04em;
+    text-transform:uppercase;color:var(--faint);line-height:1.35}
+  .row .lbl small{display:block;font-size:11px;font-weight:600;letter-spacing:0;text-transform:none;color:#4b5568}
+  .val{font-size:15px;font-weight:600;color:var(--dim);display:flex;align-items:center;gap:7px}
+  .val.right{justify-content:flex-end;text-align:right}
+  .val.win{color:#86efac;font-weight:800}
+  .val .tag{font-size:12px;font-weight:800;color:var(--win)}
+  .val .est{font-size:12px;color:var(--faint);font-weight:600}
+  .bar{height:7px;border-radius:99px;background:#1a2236;overflow:hidden;margin-top:6px}
+  .bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#4d7c00,#a3e635)}
+  .bar.am i{background:linear-gradient(90deg,#9f1017,#f87171)}
+  .cell{display:flex;flex-direction:column}
+  .cell.right{align-items:flex-end}
+
+  /* ---------- prós e contras ---------- */
+  .adv-title{font-size:12px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--faint);margin:26px 0 8px}
+  .pc-legend{font-size:12px;color:var(--faint);margin-bottom:12px;line-height:1.55}
+  .pc-legend .duelo{color:#38bdf8;font-weight:800}
+  .pc-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .pc-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:15px 17px}
+  .pc-card h3{margin:0 0 4px;font-size:15px;letter-spacing:-.01em}
+  .pc-card.nv h3{color:#b6e86b} .pc-card.am h3{color:#ff9ea2}
+  .pc-card .resumo-mem{font-size:11.5px;color:var(--faint);margin-bottom:12px}
+  .pc-block{margin-top:14px}
+  .pc-block h4{margin:0 0 7px;font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+  .pc-block.pro h4{color:#4ade80}
+  .pc-block.con h4{color:#f87171}
+  .pc-block ul{margin:0;padding:0;list-style:none;display:grid;gap:6px}
+  .pc-block li{font-size:13px;color:var(--dim);padding-left:18px;position:relative;line-height:1.45}
+  .pc-block li::before{content:"✓";position:absolute;left:0;top:0;font-weight:800;color:#22c55e}
+  .pc-block.con li::before{content:"✕";color:#ef4444}
+  .pc-block li.duelo{color:#dbe4ff}
+  .pc-block li.duelo::before{content:"↔";color:#38bdf8}
+  .pc-block .none{font-size:13px;color:var(--faint);margin:0}
+
+  footer{margin-top:28px;padding-top:18px;border-top:1px solid var(--border);
+    font-size:12px;color:var(--faint);line-height:1.65}
+  footer a{color:#38bdf8;text-decoration:none}
+
+  @media(max-width:720px){
+    .pick-row{grid-template-columns:1fr;gap:8px}
+    .mid{flex-direction:row;justify-content:center}
+    .row{grid-template-columns:1fr 1fr;gap:6px;padding:12px}
+    .row .lbl{grid-column:1 / -1;text-align:left;order:-1}
+    .heads{grid-template-columns:1fr}
+    .pc-grid{grid-template-columns:1fr}
+    .val.right{justify-content:flex-start;text-align:left}
+    .cell.right{align-items:flex-start}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topo">
+    <h1>Comparar Placas de Vídeo<br><span class="nv">NVIDIA GeForce</span> <span style="color:var(--faint)">vs</span> <span class="am">AMD Radeon</span></h1>
+    <p>Escolha a <b>Placa A</b> e a <b>Placa B</b> para ver preço, desempenho em jogos e benefícios lado a lado.</p>
+  </div>
+
+  <div class="pick-row">
+    <div class="pick">
+      <label for="sel-a">Placa A</label>
+      <select id="sel-a"></select>
+    </div>
+    <div class="mid">
+      <div class="vs">VS</div>
+      <button class="swap" id="btn-swap" title="Inverter as placas">⇄</button>
+    </div>
+    <div class="pick">
+      <label for="sel-b">Placa B</label>
+      <select id="sel-b"></select>
+    </div>
+  </div>
+
+  <div class="res-row">
+    <span class="rl">Vou jogar em</span>
+    <button class="res-btn on" data-res="p1080">1080p</button>
+    <button class="res-btn" data-res="p1440">1440p</button>
+    <button class="res-btn" data-res="p4k">4K</button>
+  </div>
+
+  <div class="verdict" id="verdict"></div>
+
+  <div class="heads" id="heads"></div>
+
+  <div class="cmp" id="cmp"></div>
+
+  <div class="adv-title">Prós e contras de cada uma</div>
+  <div class="pc-legend">Os itens com <span class="duelo">↔</span> são diferenças diretas em relação à placa do outro lado, calculadas com os números da comparação. Os demais são características da placa por si só.</div>
+  <div class="pc-grid" id="pc"></div>
+
+  <footer>
+    <b>Como ler os números.</b> O <b>desempenho</b> é o índice de hierarquia de GPUs do Tom's Hardware (média de 11 jogos, qualidade Ultra, sem upscaling), com a RTX 5090 = 100 pontos. O <b>FPS</b> mostrado é uma média estimada dessa suíte, não uma promessa para um jogo específico. Valores marcados com <b>≈</b> são estimados (a placa não foi medida diretamente na base de referência).<br />
+    <b>Preços</b> em reais, menor valor à vista encontrado em lojas brasileiras (Pichau, Terabyte, KaBuM, Amazon e Mercado Livre) em <b>18/10/2026</b>. Preço de placa de vídeo muda toda semana — confirme na loja antes de comprar.<br />
+    <b>Links de compra</b> abrem a busca daquele modelo na loja (o botão verde vai para a loja onde o menor preço foi encontrado). Os links de <b>comparar preço</b> (Buscapé, Zoom e Google Shopping) mostram a oferta mais barata entre todas as lojas de uma vez — é o jeito mais rápido de achar o melhor preço do dia.<br />
+    O comparador não considera DLSS/FSR/XeSS nem ray tracing: são números de rasterização nativa. Em jogos com ray tracing pesado e upscaling, a vantagem costuma ficar com as placas NVIDIA.<br />
+    Quer ver o mercado inteiro? Abra o <a href="painel-completo.html">painel completo</a> — gráficos, faixas de preço e tabela com as 19 placas.
+  </footer>
+</div>
+
+<script>
+/* =========================================================================
+   BASE DE DADOS — preços (R$) coletados em 18/10/2026
+   perf = índice de desempenho em jogos, RTX 5090 = 100 (Tom's Hardware, jun/2026)
+   est  = valor estimado (a placa não tem medição direta na base de referência)
+   Para atualizar um preço, basta editar o campo "price" e a loja em "priceStore".
+   ========================================================================= */
+const GPUS = [
+  { name:"RTX 5090", brand:"NVIDIA", arch:"Blackwell", year:2025, vram:32, mem:"GDDR7", tdp:575, price:36999, priceStore:"Pichau", upscaling:"DLSS 4 + Multi Frame Gen", perf:{p1080:100.0, p1440:100.0, p4k:100.0} },
+  { name:"RTX 5080", brand:"NVIDIA", arch:"Blackwell", year:2025, vram:16, mem:"GDDR7", tdp:360, price:11499, priceStore:"Pichau", upscaling:"DLSS 4 + Multi Frame Gen", perf:{p1080:81.9, p1440:76.7, p4k:69.8} },
+  { name:"RTX 5070 Ti", brand:"NVIDIA", arch:"Blackwell", year:2025, vram:16, mem:"GDDR7", tdp:300, price:9399, priceStore:"Pichau", upscaling:"DLSS 4 + Multi Frame Gen", perf:{p1080:76.2, p1440:69.8, p4k:61.9} },
+  { name:"RTX 5070", brand:"NVIDIA", arch:"Blackwell", year:2025, vram:12, mem:"GDDR7", tdp:250, price:5259, priceStore:"Pichau", upscaling:"DLSS 4 + Multi Frame Gen", perf:{p1080:65.1, p1440:57.6, p4k:49.0} },
+  { name:"RTX 5060 Ti 16GB", brand:"NVIDIA", arch:"Blackwell", year:2025, vram:16, mem:"GDDR7", tdp:180, price:4589, priceStore:"Pichau", upscaling:"DLSS 4 + Multi Frame Gen", perf:{p1080:51.6, p1440:43.9, p4k:36.3} },
+  { name:"RTX 5060 Ti 8GB", brand:"NVIDIA", arch:"Blackwell", year:2025, vram:8, mem:"GDDR7", tdp:180, price:3199, priceStore:"Pichau", upscaling:"DLSS 4 + Multi Frame Gen", perf:{p1080:49.3, p1440:41.0, p4k:25.4} },
+  { name:"RTX 5060", brand:"NVIDIA", arch:"Blackwell", year:2025, vram:8, mem:"GDDR7", tdp:145, price:2799, priceStore:"Pichau", upscaling:"DLSS 4 + Multi Frame Gen", perf:{p1080:43.4, p1440:35.8, p4k:19.6} },
+  { name:"RTX 5050", brand:"NVIDIA", arch:"Blackwell", year:2025, vram:8, mem:"GDDR6", tdp:130, price:2359, priceStore:"Pichau", upscaling:"DLSS 4 + Multi Frame Gen", perf:{p1080:34.0, p1440:27.1, p4k:15.4} },
+  { name:"RTX 4060", brand:"NVIDIA", arch:"Ada Lovelace", year:2023, vram:8, mem:"GDDR6", tdp:115, price:3399, priceStore:"Amazon", upscaling:"DLSS 3 + Frame Gen", perf:{p1080:35.1, p1440:28.4, p4k:15.7} },
+  { name:"RTX 3060 12GB", brand:"NVIDIA", arch:"Ampere", year:2021, vram:12, mem:"GDDR6", tdp:170, price:2159, priceStore:"Pichau", upscaling:"DLSS 2", perf:{p1080:30.2, p1440:25.0, p4k:20.0} },
+  { name:"RTX 3050 6GB", brand:"NVIDIA", arch:"Ampere", year:2024, vram:6, mem:"GDDR6", tdp:70, price:1399, priceStore:"Pichau", upscaling:"DLSS 2", perf:{p1080:21.9, p1440:17.8, p4k:9.5}, est:{p4k:true} },
+
+  { name:"RX 9070 XT", brand:"AMD", arch:"RDNA 4", year:2025, vram:16, mem:"GDDR6", tdp:304, price:6199, priceStore:"Pichau", upscaling:"FSR 4", perf:{p1080:76.9, p1440:69.7, p4k:59.4} },
+  { name:"RX 9070", brand:"AMD", arch:"RDNA 4", year:2025, vram:16, mem:"GDDR6", tdp:220, price:5529, priceStore:"Amazon", upscaling:"FSR 4", perf:{p1080:69.1, p1440:62.1, p4k:52.1} },
+  { name:"RX 9070 GRE", brand:"AMD", arch:"RDNA 4", year:2025, vram:12, mem:"GDDR6", tdp:220, price:4399, priceStore:"Terabyte", upscaling:"FSR 4", perf:{p1080:59.2, p1440:51.8, p4k:41.8} },
+  { name:"RX 9060 XT 16GB", brand:"AMD", arch:"RDNA 4", year:2025, vram:16, mem:"GDDR6", tdp:160, price:3799, priceStore:"Terabyte", upscaling:"FSR 4", perf:{p1080:48.2, p1440:40.2, p4k:31.7} },
+  { name:"RX 9060 XT 8GB", brand:"AMD", arch:"RDNA 4", year:2025, vram:8, mem:"GDDR6", tdp:150, price:2999, priceStore:"Amazon", upscaling:"FSR 4", perf:{p1080:45.7, p1440:37.3, p4k:26.8} },
+  { name:"RX 9050 8GB", brand:"AMD", arch:"RDNA 4", year:2026, vram:8, mem:"GDDR6", tdp:92, price:1999, priceStore:"Terabyte", upscaling:"FSR 4", perf:{p1080:25.0, p1440:19.5, p4k:12.0}, est:{p1080:true,p1440:true,p4k:true} },
+  { name:"RX 7600", brand:"AMD", arch:"RDNA 3", year:2023, vram:8, mem:"GDDR6", tdp:165, price:1899, priceStore:"Terabyte", upscaling:"FSR 3", perf:{p1080:34.3, p1440:27.2, p4k:16.6} },
+  { name:"RX 6600", brand:"AMD", arch:"RDNA 2", year:2021, vram:8, mem:"GDDR6", tdp:132, price:2189, priceStore:"Mercado Livre", upscaling:"FSR 2/3", perf:{p1080:25.5, p1440:14.8, p4k:11.0}, est:{p1440:true,p4k:true} }
+];
+
+/* =========================================================================
+   ANÁLISE — prós e contras de cada placa (texto próprio, vale para a placa
+   por si só, independente de quem ela está enfrentando na comparação).
+   ========================================================================= */
+const ANALISE = {
+  "RTX 5090": {
+    pros: [
+      "Desempenho mais alto do mercado: 204 fps em 1080p e 111 fps em 4K, sem concorrente à vista",
+      "32 GB GDDR7 com barramento de 512 bits: sobra memória para 4K, texturas pesadas e IA",
+      "DLSS 4 com Multi Frame Generation, o upscaling mais avançado disponível hoje",
+      "Ray tracing de longe o mais forte da lista"
+    ],
+    contras: [
+      "R$ 36.999: fora do alcance da esmagadora maioria dos gamers",
+      "575 W de consumo — pede fonte de 1000 W ou mais e gabinete muito ventilado",
+      "Eficiência fraca (0,17 pts/W), a pior da lista ao lado da RTX 3060",
+      "Em 1080p o processador vira o gargalo: você paga por desempenho que não usa"
+    ]
+  },
+  "RTX 5080": {
+    pros: [
+      "Segunda mais rápida do mercado: 167 fps em 1080p e 77 fps em 4K",
+      "16 GB GDDR7 com barramento de 256 bits",
+      "DLSS 4 com Multi Frame Gen e ray tracing de primeira linha",
+      "Consumo dentro do esperado para o desempenho (360 W)"
+    ],
+    contras: [
+      "Custo por quadro alto: R$ 68,90, quase o dobro da RX 9070 XT",
+      "A RTX 5070 Ti custa R$ 2.100 menos e entrega 93% do desempenho",
+      "16 GB é pouco para uma placa de R$ 11.499",
+      "Exige fonte de 850 W ou mais"
+    ]
+  },
+  "RTX 5070 Ti": {
+    pros: [
+      "Placa de 4K de verdade: 155 fps em 1080p e 69 fps em 4K",
+      "16 GB GDDR7 com barramento de 256 bits",
+      "DLSS 4 com Multi Frame Gen e ray tracing forte",
+      "Entrega 93% do desempenho da RTX 5080 custando R$ 2.100 menos"
+    ],
+    contras: [
+      "Preço alto: R$ 9.399",
+      "A RX 9070 XT custa R$ 3.200 menos e empata em desempenho (76,9 contra 76,2)",
+      "300 W de consumo",
+      "Para 1440p, a RTX 5070 custa R$ 4.100 menos e já dá conta"
+    ]
+  },
+  "RTX 5070": {
+    pros: [
+      "Boa para 1440p ultra: 133 fps em 1080p e 96 fps em 1440p",
+      "DLSS 4 com Multi Frame Generation — o maior diferencial da NVIDIA nesta faixa",
+      "Ray tracing forte",
+      "Consumo moderado (250 W)"
+    ],
+    contras: [
+      "12 GB de VRAM por R$ 5.259 — pouco para 1440p ou 4K com texturas no máximo",
+      "Barramento de apenas 192 bits",
+      "A RX 9070 custa R$ 270 mais, tem 16 GB e rende 6% mais",
+      "Custo por quadro (R$ 39,70) pior que o da RX 9070 GRE, que custa R$ 860 menos"
+    ]
+  },
+  "RTX 5060 Ti 16GB": {
+    pros: [
+      "16 GB de VRAM, o que dá fôlego real em 1440p e evita o teto de memória",
+      "105 fps em 1080p e 73 fps em 1440p",
+      "DLSS 4 com Multi Frame Generation",
+      "Eficiência boa (0,29 pts/W) com consumo de 180 W"
+    ],
+    contras: [
+      "Custo por quadro alto: R$ 43,70 — a RX 9060 XT 16GB custa R$ 790 menos e chega a 93% do desempenho",
+      "Barramento de 128 bits limita a placa em resoluções altas",
+      "4K só com upscaling agressivo (36,3 pts)",
+      "A versão de 8 GB custa R$ 1.390 menos: você paga caro só pela memória extra"
+    ]
+  },
+  "RTX 5060 Ti 8GB": {
+    pros: [
+      "1080p com folga e 1440p com ajustes: 100 fps e 83 fps",
+      "DLSS 4 com Multi Frame Generation",
+      "Um pouco mais rápida que a RX 9060 XT 8GB (49,3 contra 45,7)",
+      "Consumo de 180 W, roda com fonte de 550 W"
+    ],
+    contras: [
+      "8 GB de VRAM: já limita texturas altas em 1440p",
+      "4K inviável (25,4 pts, cerca de 28 fps)",
+      "Barramento de 128 bits",
+      "Pouco salto sobre a RTX 5060, que custa R$ 400 menos e rende 12% menos"
+    ]
+  },
+  "RTX 5060": {
+    pros: [
+      "Melhor custo-benefício da NVIDIA nesta geração: 88 fps em 1080p por R$ 2.799",
+      "DLSS 4 com Multi Frame Generation",
+      "Consumo baixo (145 W), roda com fonte de 500 W",
+      "Eficiência muito boa para a faixa (0,30 pts/W)"
+    ],
+    contras: [
+      "8 GB de VRAM e barramento de 128 bits — o combo mais criticado da geração",
+      "1440p no limite e 4K fora de questão (19,6 pts, cerca de 22 fps)",
+      "A RX 9060 XT 8GB custa R$ 200 mais e rende 5% mais",
+      "A RX 7600 custa R$ 900 menos e entrega 79% do desempenho"
+    ]
+  },
+  "RTX 5050": {
+    pros: [
+      "A RTX 50 mais barata (R$ 2.359) e a porta de entrada para o DLSS 4 com Frame Gen",
+      "69 fps em 1080p — resolve jogos leves e competitivos com folga",
+      "Consumo baixo (130 W), roda com fonte de 450 W",
+      "Modelos compactos, cabem em gabinetes pequenos"
+    ],
+    contras: [
+      "Custo por quadro ruim para a faixa: R$ 34,10",
+      "A RX 7600 custa R$ 460 MENOS e rende o mesmo (34,3 contra 34,0)",
+      "A RX 9060 XT 8GB rende 34% mais e tem custo por quadro melhor",
+      "8 GB, barramento de 128 bits e 4K inútil (15,4 pts)"
+    ]
+  },
+  "RTX 4060": {
+    pros: [
+      "Roda tudo em 1080p: 72 fps de média",
+      "DLSS 3 com Frame Generation",
+      "Muito eficiente: 0,31 pts/W com apenas 115 W",
+      "Compacta, funciona com fontes de 450 W"
+    ],
+    contras: [
+      "Preço sem sentido em 2026: R$ 3.399, mais caro que a RTX 5060 (R$ 2.799), que é 24% mais rápida",
+      "Custo por quadro altíssimo: R$ 47,50 — o pior da lista depois da RX 6600",
+      "8 GB de VRAM e barramento de 128 bits",
+      "1440p no limite e 4K inútil (15,7 pts)"
+    ]
+  },
+  "RTX 3060 12GB": {
+    pros: [
+      "12 GB de VRAM por R$ 2.159 — muita memória para o preço",
+      "62 fps em 1080p, resolve os jogos atuais em Full HD",
+      "Barramento de 192 bits",
+      "Preço de entrada e boa oferta de modelos"
+    ],
+    contras: [
+      "GPU de 2021 (Ampere): só DLSS 2, sem Frame Generation",
+      "Eficiência ruim (0,18 pts/W): 170 W para desempenho de 1080p",
+      "Ray tracing fraco, sem uso prático",
+      "A RX 7600 custa R$ 260 menos e é 14% mais rápida"
+    ]
+  },
+  "RTX 3050 6GB": {
+    pros: [
+      "A placa mais barata da lista: R$ 1.399",
+      "Melhor eficiência da tabela (0,31 pts/W) com só 70 W — funciona sem conector extra de energia",
+      "45 fps em 1080p em jogos leves e competitivos",
+      "Ótima para PC de escritório que joga de vez em quando"
+    ],
+    contras: [
+      "6 GB de VRAM e barramento de 96 bits: a menor configuração da lista",
+      "Sem Frame Generation (apenas DLSS 2)",
+      "1440p fraco (36 fps) e 4K inútil",
+      "A RX 7600 custa R$ 500 mais e é 57% mais rápida"
+    ]
+  },
+  "RX 9070 XT": {
+    pros: [
+      "Melhor relação preço/desempenho da faixa alta: 157 fps em 1080p e 59 fps em 4K por R$ 6.199",
+      "16 GB GDDR6 com barramento de 256 bits",
+      "FSR 4, o upscaling por IA da AMD, com qualidade próxima do DLSS",
+      "Custo por quadro (R$ 39,60) igual ao da RTX 5070, que é 18% mais lenta"
+    ],
+    contras: [
+      "Ray tracing claramente atrás das RTX 50",
+      "FSR 4 tem adoção menor que o DLSS e não há geração de quadros equivalente ao Multi Frame Gen",
+      "Consome 304 W e esquenta bastante",
+      "A RX 9070 custa R$ 670 menos e rende 10% menos — melhor custo por real"
+    ]
+  },
+  "RX 9070": {
+    pros: [
+      "Melhor eficiência da faixa alta (0,31 pts/W)",
+      "141 fps em 1080p e 52 fps em 4K — placa de 4K por R$ 5.529",
+      "16 GB GDDR6 e barramento de 256 bits",
+      "Custo por quadro (R$ 39,30) melhor que o da RTX 5070"
+    ],
+    contras: [
+      "Ray tracing mais fraco que o das RTX 50 equivalentes",
+      "FSR 4 com adoção menor que o DLSS",
+      "220 W de consumo",
+      "Custo por quadro quase igual ao da RX 9060 XT 16GB, que custa R$ 1.730 menos"
+    ]
+  },
+  "RX 9070 GRE": {
+    pros: [
+      "121 fps em 1080p e 42 fps em 4K por R$ 4.399",
+      "Custo por quadro bom (R$ 36,50)",
+      "FSR 4",
+      "Eficiência razoável (0,27 pts/W)"
+    ],
+    contras: [
+      "12 GB de VRAM num preço de R$ 4.399, enquanto a RX 9070 tem 16 GB por R$ 1.130 mais",
+      "Barramento reduzido (192 bits)",
+      "Ray tracing atrás das RTX 50 da faixa",
+      "O sufixo GRE indica linha mais restrita, com menos modelos e menos estoque"
+    ]
+  },
+  "RX 9060 XT 16GB": {
+    pros: [
+      "16 GB de VRAM por R$ 3.799 — muita memória para a faixa",
+      "98 fps em 1080p e 67 fps em 1440p",
+      "FSR 4",
+      "Eficiência boa (0,30 pts/W) com 160 W"
+    ],
+    contras: [
+      "Custo por quadro (R$ 38,70) bem pior que o da versão de 8 GB (R$ 32,20)",
+      "Barramento de 128 bits",
+      "4K só com upscaling (31,7 pts)",
+      "Ray tracing abaixo das RTX 5060 Ti equivalentes"
+    ]
+  },
+  "RX 9060 XT 8GB": {
+    pros: [
+      "93 fps em 1080p por R$ 2.999 — desempenho bem acima do esperado para a faixa de R$ 3 mil",
+      "Melhor custo por quadro da faixa de R$ 3 mil (R$ 32,20)",
+      "FSR 4",
+      "1440p viável: 62 fps"
+    ],
+    contras: [
+      "8 GB de VRAM: 4K inviável (26,8 pts, cerca de 30 fps)",
+      "Barramento de 128 bits",
+      "Ray tracing abaixo das RTX 5060 Ti",
+      "Se VRAM for prioridade, os R$ 800 a mais da versão de 16 GB evitam bastante dor de cabeça"
+    ]
+  },
+  "RX 9050 8GB": {
+    pros: [
+      "R$ 1.999 para 51 fps em 1080p",
+      "Consumo baixíssimo (92 W) e eficiência boa (0,27 pts/W)",
+      "FSR 4, a mesma tecnologia das placas top da AMD",
+      "8 GB de VRAM numa placa de entrada"
+    ],
+    contras: [
+      "Desempenho estimado (os valores aparecem com ≈): não há medições independentes consistentes",
+      "Custo por quadro fraco: R$ 39,30, contra R$ 27,20 da RX 7600",
+      "Placa de 1080p e só isso (19,5 pts em 1440p)",
+      "Sem geração de quadros equivalente ao Multi Frame Generation"
+    ]
+  },
+  "RX 7600": {
+    pros: [
+      "O melhor custo por quadro de toda a lista: R$ 27,20 (70 fps em 1080p por R$ 1.899)",
+      "Entrega o mesmo desempenho da RTX 5050 custando R$ 460 menos",
+      "8 GB GDDR6",
+      "Preço de entrada e tamanho compacto"
+    ],
+    contras: [
+      "Não roda FSR 4, que é exclusivo da geração RDNA 4: fica no FSR 3",
+      "Ray tracing fraco, pouco utilizável",
+      "1440p no limite (27,2 pts) e 4K inútil",
+      "Eficiência mediana (0,21 pts/W): 165 W para desempenho de entrada"
+    ]
+  },
+  "RX 6600": {
+    pros: [
+      "Uma das placas com 8 GB mais baratas: R$ 2.189",
+      "52 fps em 1080p",
+      "Consumo baixo (132 W)",
+      "Boa para montar um PC de entrada e jogar em Full HD"
+    ],
+    contras: [
+      "Arquitetura antiga (RDNA 2, de 2021): só FSR 2 e 3, sem FSR 4",
+      "Custo por quadro ruim (R$ 42,20) — pior que o da RX 7600 e o da RTX 3050",
+      "Ray tracing sem uso prático",
+      "1440p e 4K fracos e com valores estimados (≈)"
+    ]
+  }
+};
+
+/* FPS da RTX 5090 por ponto de índice (mesma base de testes) */
+const FPS_FACTOR = { p1080:2.037, p1440:1.672, p4k:1.108 };
+const RES_LABEL  = { p1080:"1080p", p1440:"1440p", p4k:"4K" };
+
+const state = { res:"p1080", a:"RTX 5050", b:"RX 9060 XT 8GB" };
+
+/* ---------------- utilidades ---------------- */
+const get  = n => GPUS.find(g => g.name === n);
+const brl  = v => "R$ " + Math.round(v).toLocaleString("pt-BR");
+const num  = (v,d=1) => v.toLocaleString("pt-BR", { minimumFractionDigits:d, maximumFractionDigits:d });
+const marca = g => g.brand === "NVIDIA" ? "nv" : "am";
+
+/* nome de exibição: sempre com a memória de vídeo junto, porque o mesmo modelo
+   existe em versões de 8 GB, 16 GB etc. ("RTX 5050" vira "RTX 5050 8GB") */
+const rotulo = g => /\b\d+\s*GB$/i.test(g.name) ? g.name : g.name + " " + g.vram + "GB";
+
+function medir(g){
+  const idx = g.perf[state.res], fps = idx * FPS_FACTOR[state.res];
+  return { idx, fps, quadro: g.price / fps, porMil: fps / (g.price / 1000), efic: idx / g.tdp };
+}
+
+/* ---------------- listas de seleção ---------------- */
+function options(sel){
+  return ["NVIDIA","AMD"].map(b =>
+    '<optgroup label="' + b + '">' +
+      GPUS.filter(g => g.brand === b).map(g =>
+        '<option value="' + g.name + '"' + (g.name === sel ? " selected" : "") + '>' + rotulo(g) + '</option>'
+      ).join("") +
+    "</optgroup>").join("");
+}
+
+/* ---------------- linhas da comparação ---------------- */
+function linhas(A, B){
+  const res = RES_LABEL[state.res];
+  return [
+    { lbl:"Desempenho em jogos", sub:"1080p (Ultra)", nome:"Desempenho em 1080p", high:true, perfRow:true,
+      val:g => g.perf.p1080 * FPS_FACTOR.p1080, fmt:v => Math.round(v) + " fps", bar:true },
+    { lbl:"Desempenho em jogos", sub:"1440p (Ultra)", nome:"Desempenho em 1440p", high:true, perfRow:true,
+      val:g => g.perf.p1440 * FPS_FACTOR.p1440, fmt:v => Math.round(v) + " fps", bar:true },
+    { lbl:"Desempenho em jogos", sub:"4K (Ultra)", nome:"Desempenho em 4K", high:true, perfRow:true,
+      val:g => g.perf.p4k * FPS_FACTOR.p4k, fmt:v => Math.round(v) + " fps", bar:true },
+    { lbl:"FPS por R$ 1.000", sub:"retorno em " + res, nome:"FPS por R$ 1.000 em " + res, high:true,
+      val:g => medir(g).porMil, fmt:v => num(v) + " fps", bar:true },
+    { lbl:"Custo por quadro", sub:"em " + res, nome:"Custo por quadro em " + res, high:false,
+      val:g => medir(g).quadro, fmt:v => "R$ " + num(v) },
+    { lbl:"Preço", sub:"à vista, 18/10/2026", nome:"Preço", high:false,
+      val:g => g.price, fmt:v => brl(v) },
+    { lbl:"Memória de vídeo", sub:"tipo e capacidade", nome:"Memória de vídeo", high:true, bar:true, pct:false,
+      val:g => g.vram, fmt:(v,g) => g.vram + " GB " + g.mem },
+    { lbl:"Consumo", sub:"TDP da placa", nome:"Consumo", high:false,
+      val:g => g.tdp, fmt:v => Math.round(v) + " W" },
+    { lbl:"Eficiência", sub:"desempenho por watt", nome:"Eficiência", high:true,
+      val:g => medir(g).efic, fmt:v => num(v,2) + " pts/W" },
+    { lbl:"Upscaling", sub:"tecnologia de imagem", neutro:true,
+      val:g => 0, fmt:(v,g) => g.upscaling },
+    { lbl:"Arquitetura", sub:"geração e lançamento", neutro:true,
+      val:g => 0, fmt:(v,g) => g.arch + " · " + g.year }
+  ];
+}
+
+/* ---------------- links de compra ---------------- */
+const enc  = s => encodeURIComponent(s);
+const slug = s => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                   .replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const mais = s => s.replace(/ /g, "+");
+
+/* cada loja tem seu formato de URL de busca */
+const LOJAS = [
+  ["Pichau",        g => "https://www.pichau.com.br/search?q=" + enc(g.name)],
+  ["Terabyte",      g => "https://www.terabyteshop.com.br/busca?str=" + mais(g.name)],
+  ["KaBuM",         g => "https://www.kabum.com.br/busca/" + slug(g.name)],
+  ["Amazon",        g => "https://www.amazon.com.br/s?k=" + mais(g.name)],
+  ["Mercado Livre", g => "https://lista.mercadolivre.com.br/" + slug(g.name)]
+];
+
+/* comparadores de preço: mostram a oferta mais barata entre todas as lojas */
+const AGREGADORES = [
+  ["Buscapé",         g => "https://www.buscape.com.br/search?q=" + enc(g.name)],
+  ["Zoom",            g => "https://www.zoom.com.br/search?q=" + enc(g.name)],
+  ["Google Shopping", g => "https://www.google.com/search?tbm=shop&q=" + enc(g.name)]
+];
+
+const link = (nome, url) =>
+  '<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + nome + '</a>';
+
+function blocoLojas(g){
+  const principal = LOJAS.find(l => l[0] === g.priceStore) || LOJAS[0];
+  const outras = LOJAS.filter(l => l[0] !== principal[0]);
+  return '<a class="btn-buy" href="' + principal[1](g) + '" target="_blank" rel="noopener noreferrer">' +
+           '🛒 Comprar na ' + principal[0] + '</a>' +
+         '<div class="loja-lbl">Outras lojas</div>' +
+         '<div class="loja-links">' + outras.map(l => link(l[0], l[1](g))).join("") + '</div>' +
+         '<div class="loja-lbl">Comparar preço</div>' +
+         '<div class="loja-links">' + AGREGADORES.map(l => link(l[0], l[1](g))).join("") + '</div>';
+}
+
+/* ---------------- render ---------------- */
+function render(){
+  const A = get(state.a), B = get(state.b);
+  if (!A || !B) return;
+
+  document.getElementById("sel-a").value = A.name;
+  document.getElementById("sel-b").value = B.name;
+  document.querySelectorAll(".res-btn").forEach(b => b.classList.toggle("on", b.dataset.res === state.res));
+
+  /* cabeçalhos com preço e diferença */
+  const maisBarata = A.price <= B.price ? A : B;
+  const diff = Math.abs(A.price - B.price);
+  const pct  = Math.round(Math.abs(A.price / B.price - 1) * 100);
+  document.getElementById("heads").innerHTML = [A, B].map(g => {
+    const ganha = g === maisBarata && diff > 0;
+    return '<div class="head-card ' + marca(g) + '">' +
+      '<div class="marca">' + g.brand + '</div>' +
+      '<div class="nome">' + g.name + '</div>' +
+      '<div class="spec">' + g.vram + ' GB ' + g.mem + ' · ' + g.tdp + ' W</div>' +
+      '<div class="preco">' + brl(g.price) + '</div>' +
+      '<div class="loja">menor preço: ' + g.priceStore + '</div>' +
+      (diff > 0
+        ? (ganha
+            ? '<div class="diff">R$ ' + diff.toLocaleString("pt-BR") + ' mais barata (' + pct + '%)</div>'
+            : '<div class="diff neutro">R$ ' + diff.toLocaleString("pt-BR") + ' mais cara</div>')
+        : '<div class="diff neutro">mesmo preço</div>') +
+      blocoLojas(g) +
+    '</div>';
+  }).join("");
+
+  /* veredito */
+  const mA = medir(A), mB = medir(B);
+  const aMais = mA.idx >= mB.idx;
+  const rapida = aMais ? A : B, lenta = aMais ? B : A;
+  const vR = aMais ? mA : mB, vL = aMais ? mB : mA;
+  const ganho = (vR.idx / vL.idx - 1) * 100;
+
+  const aValor = mA.porMil >= mB.porMil;
+  const valWin = aValor ? A : B, valLose = aValor ? B : A;
+  const vW = aValor ? mA : mB, vLm = aValor ? mB : mA;
+  const valPct = (vW.porMil / vLm.porMil - 1) * 100;
+
+  let veredito;
+  if (A.name === B.name){
+    veredito = 'Você selecionou a mesma placa nos dois lados — escolha duas placas diferentes para comparar.';
+  } else {
+    const sobreValor = valPct < 2
+      ? 'Empate técnico em custo-benefício em ' + RES_LABEL[state.res] + ': <b>' + rotulo(A) + '</b> e <b>' + rotulo(B) + '</b> entregam praticamente o mesmo desempenho por real.'
+      : 'Para jogar em ' + RES_LABEL[state.res] + ', a <b>' + rotulo(valWin) + '</b> é a melhor compra: ' + num(valPct) + '% mais FPS por real que a ' + rotulo(valLose) + '.';
+    const sobreDesempenho = ganho < 2
+      ? 'Em desempenho puro, as duas estão praticamente empatadas.'
+      : 'Em desempenho puro, a <b>' + rotulo(rapida) + '</b> é ' + num(ganho) + '% mais rápida que a ' + rotulo(lenta) + '.';
+    veredito = sobreValor + ' ' + sobreDesempenho;
+  }
+  document.getElementById("verdict").innerHTML = veredito;
+
+  /* tabela de comparação */
+  const rows = linhas(A, B);
+  document.getElementById("cmp").innerHTML = rows.map(r => {
+    const va = r.val(A), vb = r.val(B);
+    const empate = Math.abs(va - vb) < 1e-9;
+    const aGanha = !r.neutro && !empate && (r.high ? va > vb : va < vb);
+    const bGanha = !r.neutro && !empate && (r.high ? vb > va : vb < va);
+
+    const celula = (g, v, ganha, lado) => {
+      const est = g.est && g.est[state.res] && r.perfRow;
+      const conteudo =
+        '<div class="val ' + (lado === "b" ? "right " : "") + (ganha ? "win" : "") + '">' +
+          (ganha && lado === "b" ? '<span class="tag" title="vantagem neste quesito">✔</span>' : "") +
+          r.fmt(v, g) +
+          (est ? ' <span class="est" title="valor estimado">≈</span>' : "") +
+          (ganha && lado === "a" ? '<span class="tag" title="vantagem neste quesito">✔</span>' : "") +
+        '</div>' +
+        (r.bar ? '<div class="bar ' + marca(g) + '"><i style="width:' + largura(r, va, vb, v) + '%"></i></div>' : "");
+      return '<div class="cell ' + (lado === "b" ? "right" : "") + '">' + conteudo + '</div>';
+    };
+
+    return '<div class="row">' +
+      celula(A, va, aGanha, "a") +
+      '<div class="lbl">' + r.lbl + '<small>' + r.sub + '</small></div>' +
+      celula(B, vb, bGanha, "b") +
+    '</div>';
+  }).join("");
+
+  /* prós e contras */
+  const prosA = [], prosB = [], consA = [], consB = [];
+
+  /* 1) diferenças medidas nesta comparação (entram nos prós de um e nos contras do outro) */
+  rows.forEach(r => {
+    if (r.neutro) return;
+    const va = r.val(A), vb = r.val(B);
+    if (Math.abs(va - vb) < 1e-9) return;
+    const aGanha = r.high ? va > vb : va < vb;
+    const w = aGanha ? A : B, q = aGanha ? B : A;
+    const wv = aGanha ? va : vb, qv = aGanha ? vb : va;
+    let ctx = "";
+    if (r.high && r.pct !== false && qv > 0) ctx = " (+" + num((wv / qv - 1) * 100) + "%)";
+    /* no lado vencedor o valor dele vem primeiro; no lado perdedor, o valor
+       próprio vem primeiro para a frase continuar fazendo sentido */
+    const doVencedor = r.nome + ": " + r.fmt(wv, w) + " contra " + r.fmt(qv, q) + ctx + ".";
+    const doPerdedor = r.nome + ": " + r.fmt(qv, q) + " contra " + r.fmt(wv, w) + ".";
+    (aGanha ? prosA : prosB).push({ txt: doVencedor, duelo: true });
+    (aGanha ? consB : consA).push({ txt: doPerdedor, duelo: true });
+  });
+
+  /* 2) análise própria de cada placa (vale para ela por si só) */
+  const anA = ANALISE[A.name] || {}, anB = ANALISE[B.name] || {};
+  (anA.pros    || []).forEach(t => prosA.push({ txt: t }));
+  (anA.contras || []).forEach(t => consA.push({ txt: t }));
+  (anB.pros    || []).forEach(t => prosB.push({ txt: t }));
+  (anB.contras || []).forEach(t => consB.push({ txt: t }));
+
+  const itens = lista => lista.length
+    ? "<ul>" + lista.map(i => '<li' + (i.duelo ? ' class="duelo"' : "") + ">" + i.txt + "</li>").join("") + "</ul>"
+    : '<p class="none">Nenhum quesito nesta situação.</p>';
+  const cartao = (g, pros, cons) =>
+    '<div class="pc-card ' + marca(g) + '">' +
+      '<h3>' + rotulo(g) + '</h3>' +
+      '<div class="resumo-mem">' + g.vram + ' GB ' + g.mem + ' · ' + g.arch + ' (' + g.year + ') · ' + g.tdp + ' W · ' + g.upscaling + '</div>' +
+      '<div class="pc-block pro"><h4>Prós</h4>' + itens(pros) + '</div>' +
+      '<div class="pc-block con"><h4>Contras</h4>' + itens(cons) + '</div>' +
+    '</div>';
+  document.getElementById("pc").innerHTML = cartao(A, prosA, consA) + cartao(B, prosB, consB);
+}
+
+/* largura da barra: sempre a melhor ponta fica cheia */
+function largura(r, va, vb, v){
+  if (r.high) return (v / (Math.max(va, vb) || 1) * 100).toFixed(1);
+  return ((Math.min(va, vb) || 1) / v * 100).toFixed(1);
+}
+
+/* ---------------- eventos ---------------- */
+document.getElementById("sel-a").innerHTML = options(state.a);
+document.getElementById("sel-b").innerHTML = options(state.b);
+document.getElementById("sel-a").onchange = e => { state.a = e.target.value; render(); };
+document.getElementById("sel-b").onchange = e => { state.b = e.target.value; render(); };
+document.getElementById("btn-swap").onclick = () => {
+  const t = state.a; state.a = state.b; state.b = t; render();
+};
+document.querySelectorAll(".res-btn").forEach(b => b.onclick = () => {
+  state.res = b.dataset.res; render();
+});
+
+render();
+</script>
+</body>
+</html>
