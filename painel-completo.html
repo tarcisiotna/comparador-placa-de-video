@@ -259,6 +259,23 @@
   .val-good{color:#86efac;font-weight:700}
   .val-bad{color:#fca5a5}
 
+  /* ---------- Ranking da Steam ---------- */
+  #steam-table{min-width:0}
+  #steam-table thead th{cursor:default}
+  #steam-table thead th:hover{color:var(--txt-faint)}
+  #steam-table thead th:nth-child(3),#steam-table tbody td:nth-child(3){text-align:left}
+  .st-pos{display:inline-grid;place-items:center;min-width:32px;height:26px;padding:0 7px;border-radius:8px;
+    font-size:12.5px;font-weight:800;font-variant-numeric:tabular-nums;
+    background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--txt-dim)}
+  .st-pos.g1{background:rgba(251,191,36,.16);color:#fde68a;border-color:rgba(251,191,36,.45)}
+  .st-pos.g2{background:rgba(192,196,204,.14);color:#dbe0e8;border-color:rgba(192,196,204,.4)}
+  .st-pos.g3{background:rgba(205,126,58,.16);color:#f0b27a;border-color:rgba(205,126,58,.45)}
+  .st-share{display:flex;align-items:center;gap:10px;justify-content:flex-end}
+  .st-share .track{width:110px;height:7px;border-radius:99px;background:#1a2236;overflow:hidden;flex:none;display:block}
+  .st-share .fill{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#2a6fb0,#66c0f4)}
+  .st-share .pct{min-width:52px;font-variant-numeric:tabular-nums;font-weight:600}
+  .st-out{color:var(--txt-faint);font-style:italic;font-size:12.5px}
+
   .band-card{display:grid;grid-template-columns:44px 1fr auto;gap:14px;align-items:center;
     background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px}
   .band-rank{font-size:20px;font-weight:800;color:var(--gold);text-align:center}
@@ -292,6 +309,7 @@
     <div class="src-chips">
       <span class="chip">Desempenho: <b>índice Tom's Hardware 2026</b></span>
       <span class="chip">Preços: <b>Pichau · Terabyte · Amazon · Mercado Livre</b></span>
+      <span class="chip">Popularidade: <b>Pesquisa de Hardware da Steam set/2026</b></span>
       <span class="chip">Base: <b id="chip-count">–</b></span>
       <span class="chip">Moeda: <b>R$ (BRL)</b></span>
     </div>
@@ -435,6 +453,38 @@
     <div class="bands" id="bands"></div>
   </section>
 
+  <!-- ============ RANKING DA STEAM ============ -->
+  <section id="steam">
+    <div class="sec-head">
+      <h2>Posição na Pesquisa de Hardware da Steam</h2>
+      <p>Cada placa e sua colocação no ranking das GPUs de desktop mais usadas pelos jogadores. Como a popularidade não muda com os filtros, esta seção mostra as 19 placas da base inteira.</p>
+    </div>
+    <div class="grid-2 wide">
+      <div class="card">
+        <h3>Fatia de PCs na Steam</h3>
+        <p class="card-sub">% de PCs participantes da pesquisa com cada placa, entre as 19 placas deste comparador (setembro/2026).</p>
+        <div class="canvas-box tall"><canvas id="chart-steam"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>Ranking das 19 placas</h3>
+        <p class="card-sub">Ordem da Pesquisa de Hardware da Steam de setembro/2026, entre placas de vídeo de desktop (exclui notebooks, gráficos integrados, Apple e Steam Deck).</p>
+        <div class="table-scroll">
+          <table id="steam-table">
+            <thead>
+              <tr>
+                <th>Nº</th>
+                <th>Placa</th>
+                <th>Fabricante</th>
+                <th>% de PCs na Steam</th>
+              </tr>
+            </thead>
+            <tbody id="steam-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ TABELA ============ -->
   <section>
     <div class="sec-head">
@@ -471,6 +521,7 @@
       <li><b>Preços:</b> menor preço encontrado entre lojas brasileiras (Pichau, Terabyte, Amazon e Mercado Livre) em <b>18/10/2026</b>, à vista. Preços de placa de vídeo mudam toda semana — confirme na loja antes de comprar.</li>
       <li><b>Custo-benefício:</b> FPS médio estimado na resolução escolhida dividido pelo preço em milhares de reais. Quanto maior, melhor o retorno.</li>
       <li><b>Eficiência:</b> pontos de índice na resolução escolhida por watt de TDP.</li>
+      <li><b>Popularidade na Steam:</b> Pesquisa de Hardware da Steam de <b>setembro/2026</b> (categoria "Video Card Description"). A posição é a colocação entre placas de vídeo de desktop — ficam de fora notebooks, gráficos integrados (Intel e AMD), Apple e Steam Deck. A Steam não separa versões com VRAM diferente (RTX 5060 Ti 8/16 GB e RX 9060 XT 8/16 GB dividem a mesma posição), e a RX 9070 GRE e a RX 9050 ainda não aparecem na pesquisa.</li>
       <li><b>Valores estimados (≈):</b> placas sem medição direta na base de referência — RX 9050 (8 GB), RX 6600 e RTX 3050 em 4K — tiveram o desempenho inferido das variantes e classe medidas.</li>
     </ul>
     <h4>Observações</h4>
@@ -489,6 +540,11 @@
    perf = índice relativo de desempenho em jogos (RTX 5090 = 100 pontos)
           Tom's Hardware GPU Hierarchy, junho/2026 (raster, Ultra, nativo)
    price = menor preço à vista encontrado no mercado brasileiro (18/10/2026)
+   steam = posição e fatia na Pesquisa de Hardware da Steam, set/2026
+           (pos = colocação entre GPUs de desktop, pct = % de PCs na Steam;
+            null = a placa ainda não aparece na pesquisa)
+           A Steam não separa versões de VRAM: 5060 Ti 8/16 GB e
+           RX 9060 XT 8/16 GB dividem a mesma posição.
    est   = desempenho estimado (sem medição direta na base de referência)
    ========================================================================= */
 const FPS_FACTOR = { p1080: 2.037, p1440: 1.672, p4k: 1.108 }; // FPS da RTX 5090 por ponto de índice
@@ -497,45 +553,45 @@ const UPDATED    = "18/10/2026";
 
 const GPUS = [
   /* ---------------- NVIDIA ---------------- */
-  { name:"RTX 5090",      brand:"NVIDIA", arch:"Blackwell", year:2025, vram:32, mem:"GDDR7", bus:512, tdp:575, price:36999, priceStore:"Pichau", upscaling:"DLSS 4 + Multi Frame Gen",
+  { name:"RTX 5090",      brand:"NVIDIA", arch:"Blackwell", year:2025, vram:32, mem:"GDDR7", bus:512, tdp:575, price:36999, priceStore:"Pichau", upscaling:"DLSS 4 + Multi Frame Gen", steam:{pos:45,pct:0.38},
     perf:{p1080:100.0, p1440:100.0, p4k:100.0} },
-  { name:"RTX 5080",      brand:"NVIDIA", arch:"Blackwell", year:2025, vram:16, mem:"GDDR7", bus:256, tdp:360, price:11499, priceStore:"Pichau", upscaling:"DLSS 4 + Multi Frame Gen",
+  { name:"RTX 5080",      brand:"NVIDIA", arch:"Blackwell", year:2025, vram:16, mem:"GDDR7", bus:256, tdp:360, price:11499, priceStore:"Pichau", upscaling:"DLSS 4 + Multi Frame Gen", steam:{pos:12,pct:1.89},
     perf:{p1080:81.9, p1440:76.7, p4k:69.8} },
-  { name:"RTX 5070 Ti",   brand:"NVIDIA", arch:"Blackwell", year:2025, vram:16, mem:"GDDR7", bus:256, tdp:300, price:9399,  priceStore:"Pichau", upscaling:"DLSS 4 + Multi Frame Gen",
+  { name:"RTX 5070 Ti",   brand:"NVIDIA", arch:"Blackwell", year:2025, vram:16, mem:"GDDR7", bus:256, tdp:300, price:9399,  priceStore:"Pichau", upscaling:"DLSS 4 + Multi Frame Gen", steam:{pos:13,pct:1.79},
     perf:{p1080:76.2, p1440:69.8, p4k:61.9} },
-  { name:"RTX 5070",      brand:"NVIDIA", arch:"Blackwell", year:2025, vram:12, mem:"GDDR7", bus:192, tdp:250, price:5259,  priceStore:"Pichau", upscaling:"DLSS 4 + Multi Frame Gen",
+  { name:"RTX 5070",      brand:"NVIDIA", arch:"Blackwell", year:2025, vram:12, mem:"GDDR7", bus:192, tdp:250, price:5259,  priceStore:"Pichau", upscaling:"DLSS 4 + Multi Frame Gen", steam:{pos:1,pct:5.86},
     perf:{p1080:65.1, p1440:57.6, p4k:49.0} },
-  { name:"RTX 5060 Ti 16GB", brand:"NVIDIA", arch:"Blackwell", year:2025, vram:16, mem:"GDDR7", bus:128, tdp:180, price:4589, priceStore:"Pichau", upscaling:"DLSS 4 + Multi Frame Gen",
+  { name:"RTX 5060 Ti 16GB", brand:"NVIDIA", arch:"Blackwell", year:2025, vram:16, mem:"GDDR7", bus:128, tdp:180, price:4589, priceStore:"Pichau", upscaling:"DLSS 4 + Multi Frame Gen", steam:{pos:3,pct:3.87},
     perf:{p1080:51.6, p1440:43.9, p4k:36.3} },
-  { name:"RTX 5060 Ti 8GB",  brand:"NVIDIA", arch:"Blackwell", year:2025, vram:8,  mem:"GDDR7", bus:128, tdp:180, price:3199, priceStore:"Pichau", upscaling:"DLSS 4 + Multi Frame Gen",
+  { name:"RTX 5060 Ti 8GB",  brand:"NVIDIA", arch:"Blackwell", year:2025, vram:8,  mem:"GDDR7", bus:128, tdp:180, price:3199, priceStore:"Pichau", upscaling:"DLSS 4 + Multi Frame Gen", steam:{pos:3,pct:3.87},
     perf:{p1080:49.3, p1440:41.0, p4k:25.4} },
-  { name:"RTX 5060",      brand:"NVIDIA", arch:"Blackwell", year:2025, vram:8,  mem:"GDDR7", bus:128, tdp:145, price:2799,  priceStore:"Pichau", upscaling:"DLSS 4 + Multi Frame Gen",
+  { name:"RTX 5060",      brand:"NVIDIA", arch:"Blackwell", year:2025, vram:8,  mem:"GDDR7", bus:128, tdp:145, price:2799,  priceStore:"Pichau", upscaling:"DLSS 4 + Multi Frame Gen", steam:{pos:2,pct:4.20},
     perf:{p1080:43.4, p1440:35.8, p4k:19.6} },
-  { name:"RTX 5050",      brand:"NVIDIA", arch:"Blackwell", year:2025, vram:8,  mem:"GDDR6", bus:128, tdp:130, price:2359,  priceStore:"Pichau", upscaling:"DLSS 4 + Multi Frame Gen",
+  { name:"RTX 5050",      brand:"NVIDIA", arch:"Blackwell", year:2025, vram:8,  mem:"GDDR6", bus:128, tdp:130, price:2359,  priceStore:"Pichau", upscaling:"DLSS 4 + Multi Frame Gen", steam:{pos:58,pct:0.22},
     perf:{p1080:34.0, p1440:27.1, p4k:15.4} },
-  { name:"RTX 4060",      brand:"NVIDIA", arch:"Ada Lovelace", year:2023, vram:8, mem:"GDDR6", bus:128, tdp:115, price:3399, priceStore:"Amazon", upscaling:"DLSS 3 + Frame Gen",
+  { name:"RTX 4060",      brand:"NVIDIA", arch:"Ada Lovelace", year:2023, vram:8, mem:"GDDR6", bus:128, tdp:115, price:3399, priceStore:"Amazon", upscaling:"DLSS 3 + Frame Gen", steam:{pos:4,pct:3.72},
     perf:{p1080:35.1, p1440:28.4, p4k:15.7} },
-  { name:"RTX 3060 12GB", brand:"NVIDIA", arch:"Ampere", year:2021, vram:12, mem:"GDDR6", bus:192, tdp:170, price:2159, priceStore:"Pichau", upscaling:"DLSS 2",
+  { name:"RTX 3060 12GB", brand:"NVIDIA", arch:"Ampere", year:2021, vram:12, mem:"GDDR6", bus:192, tdp:170, price:2159, priceStore:"Pichau", upscaling:"DLSS 2", steam:{pos:5,pct:3.54},
     perf:{p1080:30.2, p1440:25.0, p4k:20.0} },
-  { name:"RTX 3050 6GB",  brand:"NVIDIA", arch:"Ampere", year:2024, vram:6,  mem:"GDDR6", bus:96,  tdp:70,  price:1399, priceStore:"Pichau", upscaling:"DLSS 2",
+  { name:"RTX 3050 6GB",  brand:"NVIDIA", arch:"Ampere", year:2024, vram:6,  mem:"GDDR6", bus:96,  tdp:70,  price:1399, priceStore:"Pichau", upscaling:"DLSS 2", steam:{pos:6,pct:2.77},
     perf:{p1080:21.9, p1440:17.8, p4k:9.5}, est:{p4k:true} },
 
   /* ---------------- AMD ---------------- */
-  { name:"RX 9070 XT",    brand:"AMD", arch:"RDNA 4", year:2025, vram:16, mem:"GDDR6", bus:256, tdp:304, price:6199, priceStore:"Pichau", upscaling:"FSR 4",
+  { name:"RX 9070 XT",    brand:"AMD", arch:"RDNA 4", year:2025, vram:16, mem:"GDDR6", bus:256, tdp:304, price:6199, priceStore:"Pichau", upscaling:"FSR 4", steam:{pos:16,pct:1.35},
     perf:{p1080:76.9, p1440:69.7, p4k:59.4} },
-  { name:"RX 9070",       brand:"AMD", arch:"RDNA 4", year:2025, vram:16, mem:"GDDR6", bus:256, tdp:220, price:5529, priceStore:"Amazon", upscaling:"FSR 4",
+  { name:"RX 9070",       brand:"AMD", arch:"RDNA 4", year:2025, vram:16, mem:"GDDR6", bus:256, tdp:220, price:5529, priceStore:"Amazon", upscaling:"FSR 4", steam:{pos:62,pct:0.19},
     perf:{p1080:69.1, p1440:62.1, p4k:52.1} },
-  { name:"RX 9070 GRE",   brand:"AMD", arch:"RDNA 4", year:2025, vram:12, mem:"GDDR6", bus:192, tdp:220, price:4399, priceStore:"Terabyte", upscaling:"FSR 4",
+  { name:"RX 9070 GRE",   brand:"AMD", arch:"RDNA 4", year:2025, vram:12, mem:"GDDR6", bus:192, tdp:220, price:4399, priceStore:"Terabyte", upscaling:"FSR 4", steam:null,
     perf:{p1080:59.2, p1440:51.8, p4k:41.8} },
-  { name:"RX 9060 XT 16GB", brand:"AMD", arch:"RDNA 4", year:2025, vram:16, mem:"GDDR6", bus:128, tdp:160, price:3799, priceStore:"Terabyte", upscaling:"FSR 4",
+  { name:"RX 9060 XT 16GB", brand:"AMD", arch:"RDNA 4", year:2025, vram:16, mem:"GDDR6", bus:128, tdp:160, price:3799, priceStore:"Terabyte", upscaling:"FSR 4", steam:{pos:24,pct:0.73},
     perf:{p1080:48.2, p1440:40.2, p4k:31.7} },
-  { name:"RX 9060 XT 8GB",  brand:"AMD", arch:"RDNA 4", year:2025, vram:8,  mem:"GDDR6", bus:128, tdp:150, price:2999, priceStore:"Amazon", upscaling:"FSR 4",
+  { name:"RX 9060 XT 8GB",  brand:"AMD", arch:"RDNA 4", year:2025, vram:8,  mem:"GDDR6", bus:128, tdp:150, price:2999, priceStore:"Amazon", upscaling:"FSR 4", steam:{pos:24,pct:0.73},
     perf:{p1080:45.7, p1440:37.3, p4k:26.8} },
-  { name:"RX 9050 8GB",   brand:"AMD", arch:"RDNA 4", year:2026, vram:8,  mem:"GDDR6", bus:128, tdp:92,  price:1999, priceStore:"Terabyte", upscaling:"FSR 4",
+  { name:"RX 9050 8GB",   brand:"AMD", arch:"RDNA 4", year:2026, vram:8,  mem:"GDDR6", bus:128, tdp:92,  price:1999, priceStore:"Terabyte", upscaling:"FSR 4", steam:null,
     perf:{p1080:25.0, p1440:19.5, p4k:12.0}, est:{p1080:true,p1440:true,p4k:true} },
-  { name:"RX 7600",       brand:"AMD", arch:"RDNA 3", year:2023, vram:8, mem:"GDDR6", bus:128, tdp:165, price:1899, priceStore:"Terabyte", upscaling:"FSR 3",
+  { name:"RX 7600",       brand:"AMD", arch:"RDNA 3", year:2023, vram:8, mem:"GDDR6", bus:128, tdp:165, price:1899, priceStore:"Terabyte", upscaling:"FSR 3", steam:{pos:40,pct:0.44},
     perf:{p1080:34.3, p1440:27.2, p4k:16.6} },
-  { name:"RX 6600",       brand:"AMD", arch:"RDNA 2", year:2021, vram:8, mem:"GDDR6", bus:128, tdp:132, price:2189, priceStore:"Mercado Livre", upscaling:"FSR 2/3",
+  { name:"RX 6600",       brand:"AMD", arch:"RDNA 2", year:2021, vram:8, mem:"GDDR6", bus:128, tdp:132, price:2189, priceStore:"Mercado Livre", upscaling:"FSR 2/3", steam:{pos:25,pct:0.71},
     perf:{p1080:25.5, p1440:14.8, p4k:11.0}, est:{p1440:true,p4k:true} }
 ];
 
@@ -956,6 +1012,44 @@ function renderBands(list){
   box.innerHTML = out.join("");
 }
 
+/* Ranking da Steam — tabela + gráfico (não reage aos filtros) */
+function renderSteam(){
+  const rows = [...GPUS].sort((a,b) =>
+    (a.steam ? a.steam.pos : 999) - (b.steam ? b.steam.pos : 999) || a.name.localeCompare(b.name));
+  const maxPct = Math.max(...GPUS.map(g => g.steam ? g.steam.pct : 0));
+
+  document.getElementById("steam-body").innerHTML = rows.map(g => {
+    const medal = g.steam && g.steam.pos <= 3 ? " g" + g.steam.pos : "";
+    const posCell = g.steam
+      ? '<span class="st-pos' + medal + '" title="' + g.steam.pos + 'º lugar entre GPUs de desktop">' + g.steam.pos + 'º</span>'
+      : '<span class="st-out" title="A placa ainda não aparece na pesquisa da Steam">—</span>';
+    const shareCell = g.steam
+      ? '<div class="st-share"><span class="track"><span class="fill" style="width:' + (g.steam.pct / maxPct * 100).toFixed(1) + '%"></span></span>' +
+        '<span class="pct">' + fmtNum(g.steam.pct, 2) + '%</span></div>'
+      : '<span class="st-out">fora do ranking</span>';
+    return "<tr>" +
+      "<td>" + posCell + "</td>" +
+      "<td>" + g.name + "</td>" +
+      '<td><span class="tag ' + (g.brand === "NVIDIA" ? "nv" : "am") + '">' + g.brand + "</span></td>" +
+      "<td>" + shareCell + "</td>" +
+    "</tr>";
+  }).join("");
+
+  if (typeof Chart === "undefined") return;
+  destroy("steam");
+  const list = GPUS.filter(g => g.steam).sort((a,b) => b.steam.pct - a.steam.pct);
+  charts.steam = new Chart(document.getElementById("chart-steam"), {
+    type:"bar",
+    data:{ labels:list.map(g => g.name),
+      datasets:[{ data:list.map(g => +g.steam.pct.toFixed(2)), backgroundColor:list.map(g => COLOR[g.brand]),
+        borderColor:list.map(g => g.brand === "NVIDIA" ? "#a3e635" : "#f87171"), borderWidth:1, borderRadius:5 }] },
+    options: barOptions((v, ctx) => {
+      const g = list[ctx.dataIndex];
+      return [ fmtNum(g.steam.pct, 2) + "% dos PCs na Steam", "Nº " + g.steam.pos + " entre GPUs de desktop" ];
+    })
+  });
+}
+
 function renderTable(list){
   const body = document.getElementById("table-body");
   const bestValue = list.length ? Math.max(...list.map(g => g.value)) : 0;
@@ -1029,9 +1123,10 @@ function renderAll(){
    7) INICIALIZAÇÃO
    ========================================================================= */
 window.addEventListener("load", () => {
+  document.getElementById("chip-count").textContent = GPUS.length + " placas";
+  renderSteam();
   if (typeof Chart === "undefined"){ document.getElementById("load-error").style.display = "block"; return; }
   Chart.defaults.font.family = "Inter";
-  document.getElementById("chip-count").textContent = GPUS.length + " placas";
   renderPresets();   /* duelos rápidos + botão de inverter */
   renderAll();
 });

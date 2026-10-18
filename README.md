@@ -24,6 +24,9 @@ internet. Baixe, dê duplo clique e funciona — inclusive offline.
   upscaling e arquitetura), com barras e quem vence marcado com ✔.
 - **Prós e contras de cada placa** — mistura as diferenças medidas naquela
   comparação (marcadas com ↔) com uma análise própria de cada uma das 19 placas.
+- **Posição na Steam** — cada placa mostra a sua colocação na Pesquisa de Hardware
+  da Steam (a lista das GPUs de desktop mais usadas pelos jogadores) e o
+  percentual de PCs. A posição também entra na tabela de comparação.
 - **Links de compra** — botão para a loja onde o menor preço foi encontrado,
   links para as outras lojas e para os comparadores de preço (Buscapé, Zoom e
   Google Shopping).
@@ -33,7 +36,7 @@ internet. Baixe, dê duplo clique e funciona — inclusive offline.
 | Arquivo | O que é |
 | --- | --- |
 | `index.html` | O comparador A vs B. É a página inicial. |
-| `painel-completo.html` | Painel com gráficos (dispersão preço × desempenho, fronteira de Pareto, custo-benefício, eficiência), faixas de preço e tabela ordenável das 19 placas. |
+| `painel-completo.html` | Painel com gráficos (dispersão preço × desempenho, fronteira de Pareto, custo-benefício, eficiência), faixas de preço, ranking da Steam e tabela ordenável das 19 placas. |
 | `preview.png` | Imagem de prévia usada neste README. |
 
 ## Como os números são calculados
@@ -59,6 +62,14 @@ Em preço, consumo e custo por quadro, **menor é melhor**.
 **Preços.** Menor valor à vista encontrado em lojas brasileiras (Pichau,
 Terabyte, KaBuM, Amazon e Mercado Livre) em **18/10/2026**.
 
+**Popularidade.** Posição na **Pesquisa de Hardware da Steam** de
+**setembro/2026** (categoria "Video Card Description"), que mede a fatia de PCs
+de jogadores com cada placa. A colocação considera apenas **placas de vídeo de
+desktop** — notebooks, gráficos integrados (Intel e AMD), Apple e Steam Deck
+ficam de fora. A Steam não separa versões com VRAM diferente (RTX 5060 Ti 8/16 GB
+e RX 9060 XT 8/16 GB dividem a mesma posição), e RX 9070 GRE e RX 9050 ainda não
+aparecem na pesquisa.
+
 ## O que não está incluído
 
 Os números são de **rasterização nativa**. O comparador não considera
@@ -73,11 +84,16 @@ Cada placa é uma linha:
 ```js
 { name:"RTX 5050", brand:"NVIDIA", arch:"Blackwell", year:2025, vram:8, mem:"GDDR6",
   tdp:130, price:2359, priceStore:"Pichau", upscaling:"DLSS 4 + Multi Frame Gen",
-  perf:{p1080:34.0, p1440:27.1, p4k:15.4} },
+  steam:{pos:58,pct:0.22}, perf:{p1080:34.0, p1440:27.1, p4k:15.4} },
 ```
 
 Para atualizar, mude só o `price` e o `priceStore` (a loja onde achou o preço).
 A análise de prós e contras de cada placa fica logo abaixo, no objeto `ANALISE`.
+
+O campo `steam` guarda a posição na Pesquisa de Hardware da Steam
+(`pos` = colocação entre GPUs de desktop, `pct` = % de PCs). Quando a pesquisa do
+mês sai, atualize os dois valores — ou use `steam:null` se a placa não aparecer.
+O mesmo array existe no `painel-completo.html` e precisa receber a mesma mudança.
 
 Contribuições com preços atualizados são bem-vindas — só cite a loja e a data.
 
