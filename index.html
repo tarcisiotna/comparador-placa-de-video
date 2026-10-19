@@ -117,9 +117,11 @@
   .bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#4d7c00,#a3e635)}
   .bar.am i{background:linear-gradient(90deg,#9f1017,#f87171)}
   /* as duas barras de cada linha começam junto ao rótulo do meio e crescem
-     para fora, para comparar o comprimento das duas na mesma linha de base */
+     para fora, para comparar o comprimento das duas na mesma linha de base.
+     A barra da direita é o espelho da esquerda: mesmo degradê, invertido. */
   .cell .bar i{margin-left:auto}
-  .cell.right .bar i{margin-left:0}
+  .cell.right .bar i{margin-left:0;background:linear-gradient(90deg,#a3e635,#4d7c00)}
+  .cell.right .bar.am i{background:linear-gradient(90deg,#f87171,#9f1017)}
   .cell{display:flex;flex-direction:column}
   .cell.right{align-items:flex-end}
 
@@ -157,7 +159,9 @@
     .pc-grid{grid-template-columns:1fr}
     .val.right{justify-content:flex-start;text-align:left}
     .cell.right{align-items:flex-start}
-    .cell.right .bar i{margin-left:0}
+    /* no celular as duas barras crescem para a direita, então usam o mesmo degradê */
+    .cell.right .bar i{margin-left:0;background:linear-gradient(90deg,#4d7c00,#a3e635)}
+    .cell.right .bar.am i{background:linear-gradient(90deg,#9f1017,#f87171)}
     .cell .bar i{margin-left:0}
   }
 </style>
