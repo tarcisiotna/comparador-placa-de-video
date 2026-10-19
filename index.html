@@ -113,9 +113,13 @@
   .val.win{color:#86efac;font-weight:800}
   .val .tag{font-size:12px;font-weight:800;color:var(--win)}
   .val .est{font-size:12px;color:var(--faint);font-weight:600}
-  .bar{height:7px;border-radius:99px;background:#1a2236;overflow:hidden;margin-top:6px}
+  .bar{height:7px;border-radius:99px;background:#1a2236;overflow:hidden;margin-top:6px;align-self:stretch}
   .bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#4d7c00,#a3e635)}
   .bar.am i{background:linear-gradient(90deg,#9f1017,#f87171)}
+  /* as duas barras de cada linha começam junto ao rótulo do meio e crescem
+     para fora, para comparar o comprimento das duas na mesma linha de base */
+  .cell .bar i{margin-left:auto}
+  .cell.right .bar i{margin-left:0}
   .cell{display:flex;flex-direction:column}
   .cell.right{align-items:flex-end}
 
@@ -153,6 +157,8 @@
     .pc-grid{grid-template-columns:1fr}
     .val.right{justify-content:flex-start;text-align:left}
     .cell.right{align-items:flex-start}
+    .cell.right .bar i{margin-left:0}
+    .cell .bar i{margin-left:0}
   }
 </style>
 </head>
