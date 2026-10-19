@@ -754,10 +754,14 @@ function render(){
   document.getElementById("pc").innerHTML = cartao(A, prosA, consA) + cartao(B, prosB, consB);
 }
 
-/* largura da barra: sempre a melhor ponta fica cheia */
+/* largura da barra: cada lado mostra a sua fatia do total das duas placas
+   (empate = 50% para cada; numa goleada o vencedor chega perto de 100%).
+   Nas linhas em que menor é melhor, o peso é invertido (1/valor). */
 function largura(r, va, vb, v){
-  if (r.high) return (v / (Math.max(va, vb) || 1) * 100).toFixed(1);
-  return ((Math.min(va, vb) || 1) / v * 100).toFixed(1);
+  const peso = x => r.high ? x : (x > 0 ? 1 / x : 0);
+  const soma = peso(va) + peso(vb);
+  if (!soma) return "0.0";
+  return (peso(v) / soma * 100).toFixed(1);
 }
 
 /* ---------------- eventos ---------------- */

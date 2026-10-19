@@ -940,8 +940,10 @@ function renderMetrics(A, B){
     const winA = !tie && (r.better === "high" ? va > vb : va < vb);
     const winB = !tie && (r.better === "high" ? vb > va : vb < va);
     const pct = v => {
-      if (r.better === "high") return v / (Math.max(va, vb) || 1) * 100;
-      return (Math.min(va, vb) || 1) / v * 100;
+      const peso = x => r.better === "high" ? x : (x > 0 ? 1 / x : 0);
+      const soma = peso(va) + peso(vb);
+      if (!soma) return 0;
+      return peso(v) / soma * 100;
     };
     const bar = (g, v, win) =>
       '<div class="m-bar ' + slotClass(g) + (win ? " win" : "") + '">' +
