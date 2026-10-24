@@ -43,8 +43,12 @@ internet. Baixe, dê duplo clique e funciona — inclusive offline.
 ## Buscador de PCs prontos
 
 O `buscador-pcs.html` é uma página separada, também HTML único, para quem quer
-comprar o computador inteiro em vez da placa avulsa. Ele tem duas abas:
+comprar o computador inteiro em vez da placa avulsa. Ele tem três abas:
 
+- **Melhores escolhas** — seleção automática de custo-benefício entre as ofertas
+  DDR4 com 16 GB+ de RAM e disco real: melhor geral, entrada até R$ 3.500,
+  melhor 1080p até R$ 7.000, melhor 1440p e melhor 4K. Cada card explica a
+  escolha e mostra o FPS por R$ 1.000 (FPS estimado em 1080p ÷ preço em milhares).
 - **Ofertas com preço** — catálogo de PCs gamers prontos com preço à vista,
   processador, RAM, disco, fonte, placa de vídeo e **link direto para o produto**
   na loja. **Só entram máquinas com memória DDR4.** Filtros por faixa de preço,

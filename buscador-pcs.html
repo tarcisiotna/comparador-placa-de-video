@@ -118,6 +118,15 @@
   .empty-state{display:none;text-align:center;padding:40px 20px;color:var(--dim);background:var(--panel);border:1px solid var(--border);border-radius:16px}
   .empty-state.show{display:block}
 
+  /* ---------- melhores escolhas ---------- */
+  .picks-intro{text-align:center;margin:0 0 18px}
+  .picks-intro h2{margin:0 0 6px;font-size:clamp(18px,2.6vw,22px);font-weight:800;letter-spacing:-.01em}
+  .picks-intro p{margin:0;color:var(--dim);font-size:13px}
+  .picks-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+  .pc-card.pick::after{background:linear-gradient(90deg,var(--gold),var(--accent))}
+  .pc-tag.destaque{background:var(--gold);border-color:transparent;color:#241a00}
+  .pick-why{padding:0 17px 13px;font-size:12px;color:#fde68a}
+
   /* ---------- meta-buscador ---------- */
   .query-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;align-items:center}
   .query-input{flex:1 1 280px;min-width:240px}
@@ -156,12 +165,26 @@
   </div>
 
   <div class="tabs">
-    <button class="tab-btn on" data-tab="catalogo">Ofertas com preço</button>
+    <button class="tab-btn on" data-tab="melhores">Melhores escolhas</button>
+    <button class="tab-btn" data-tab="catalogo">Ofertas com preço</button>
     <button class="tab-btn" data-tab="busca">Busca por loja</button>
   </div>
 
+  <!-- ============ ABA 0 — MELHORES ESCOLHAS ============ -->
+  <div class="tab-panel on" id="tab-melhores">
+    <div class="picks-intro">
+      <h2>As melhores escolhas por custo-benefício</h2>
+      <p>Seleção automática entre as ofertas DDR4 com <b>16 GB+ de RAM</b>: maior FPS por R$ 1.000 em cada faixa.</p>
+    </div>
+    <div class="picks-grid" id="picks"></div>
+    <div class="hint" style="text-align:center;margin-top:16px">
+      Custo-benefício = FPS estimado em 1080p ÷ preço em milhares de reais. Quer ver todas? Abra
+      <b>Ofertas com preço</b> e ordene por <b>melhor custo-benefício</b>.
+    </div>
+  </div>
+
   <!-- ============ ABA 1 — CATÁLOGO ============ -->
-  <div class="tab-panel on" id="tab-catalogo">
+  <div class="tab-panel" id="tab-catalogo">
     <div class="filters">
       <div class="filters-grid">
         <div class="field">
@@ -329,6 +352,7 @@
 
   <footer>
     <b>De onde vêm as ofertas.</b> A aba “Ofertas com preço” usa dados públicos das páginas de busca do <b>KaBuM!</b> e da <b>Amazon Brasil</b>, com link direto para cada produto. Pichau, Magalu, Terabyte e Mercado Livre bloqueiam acesso automatizado; por isso elas aparecem apenas na aba “Busca por loja”, que monta a URL de busca.<br />
+    <b>Melhores escolhas.</b> A seleção usa as ofertas com 16 GB+ de RAM e disco, ordenadas por FPS estimado em 1080p por R$ 1.000 (FPS ÷ preço em milhares); cada faixa pega a melhor opção ainda não escolhida, sem repetir PCs.<br />
     <b>Desempenho.</b> O índice é o do comparador de placas (Tom’s Hardware, RTX 5090 = 100), e o FPS é uma média estimada — não é garantia para um jogo específico. Como o PC tem outros componentes, o resultado real pode variar.<br />
     <b>Preços.</b> Coletados em 23/10/2026. Mudam a toda hora: confirme na loja antes de comprar.<br />
     <b>Memória.</b> O catálogo inclui <b>somente PCs com DDR4</b>; máquinas DDR3 ou DDR5 ficam de fora, mesmo com preço bom.<br />
@@ -409,6 +433,91 @@ $("f-busca").oninput = render;
 
 const ORDEM_LBL = { menor: "menor preço", maior: "maior preço", perf: "melhor desempenho", vpc: "melhor custo-benefício" };
 
+function cardHTML(p, opt) {
+  opt = opt || {};
+  const gpuClass = p.b === "nv" ? "gpu-nv" : "gpu-amd";
+  const perf = p.idx != null
+    ? Math.round(p.fps) + " fps (1080p est.) · " + p.idx.toFixed(1) + " pts · " + p.vpc.toFixed(1) + " fps por R$ 1.000"
+    : "sem índice de desempenho";
+  return '<article class="pc-card' + (opt.pick ? " pick" : "") + '">' +
+    '<div class="pc-head">' +
+      '<div class="pc-tag-row">' +
+        (opt.tag ? '<span class="pc-tag destaque">' + esc(opt.tag) + '</span>' : '') +
+        '<span class="pc-tag ' + gpuClass + '">' + esc(p.g) + (p.v ? " " + p.v + "GB" : "") + '</span>' +
+        '<span class="pc-tag res">' + focoTxt(p.foco) + '</span>' +
+        '<span class="pc-tag store">' + esc(p.c) + '</span>' +
+        (p.k ? '<span class="pc-tag">Completo</span>' : '') +
+      '</div>' +
+      '<h3 class="pc-title" title="' + esc(p.n) + '">' + esc(p.n) + '</h3>' +
+    '</div>' +
+    '<div class="pc-specs">' +
+      '<div class="spec">CPU: <b>' + esc(p.cpu) + '</b></div>' +
+      '<div class="spec">RAM: <b>' + esc(p.r) + '</b></div>' +
+      '<div class="spec">Disco: <b>' + esc(p.s) + '</b></div>' +
+      '<div class="spec">Fonte: <b>' + esc(p.f) + '</b></div>' +
+      '<div class="spec wide">Desempenho: <b>' + perf + '</b></div>' +
+    '</div>' +
+    (opt.why ? '<p class="pick-why">' + esc(opt.why) + '</p>' : '') +
+    '<div class="pc-foot">' +
+      '<div class="price-block">' +
+        '<div class="preco">' + brl(p.p) + '</div>' +
+        (p.o ? '<div class="de">' + brl(p.o) + '</div>' : '') +
+        '<div class="loja">à vista · ' + esc(p.c) + '</div>' +
+      '</div>' +
+      '<a class="btn-ver" href="' + esc(p.u) + '" target="_blank" rel="noopener noreferrer">Ver oferta →</a>' +
+    '</div>' +
+  '</article>';
+}
+
+/* ==================== MELHORES ESCOLHAS ==================== */
+const ramGB = p => parseInt((p.r || "").match(/(\d+)\s*GB/i)?.[1] || "0", 10);
+
+function renderPicks() {
+  const elegiveis = itens.filter(p =>
+    p.vpc && p.idx != null && ramGB(p) >= 16 && p.s && p.s !== "—" && /\d/.test(p.s)
+  );
+
+  const usados = new Set();
+  const melhor = (filtro, tag, why) => {
+    const p = elegiveis
+      .filter(x => !usados.has(x.id) && filtro(x))
+      .sort((a, b) => b.vpc - a.vpc)[0];
+    if (!p) return null;
+    usados.add(p.id);
+    return { p, tag, why };
+  };
+
+  const escolhas = [
+    melhor(
+      () => true,
+      "Melhor geral",
+      p => "Maior nota de custo-benefício do catálogo: " + p.vpc.toFixed(1) + " fps por R$ 1.000 (" + Math.round(p.fps) + " fps estimados em 1080p)."
+    ),
+    melhor(
+      p => p.p <= 3500,
+      "Entrada até R$ 3.500",
+      () => "A melhor opção para começar a jogar gastando pouco, já com 16 GB de RAM e SSD."
+    ),
+    melhor(
+      p => p.foco === "1080p" && p.p <= 7000,
+      "1080p até R$ 7.000",
+      p => "Folga para 1080p no alto/ultra: " + Math.round(p.fps) + " fps estimados e " + p.vpc.toFixed(1) + " fps por R$ 1.000."
+    ),
+    melhor(
+      p => p.foco === "1440p",
+      "Melhor 1440p",
+      p => "Pronto para 1440p com " + (p.v || "?") + " GB de VRAM: " + Math.round(p.fps) + " fps estimados em 1080p."
+    ),
+    melhor(
+      p => p.foco === "4k",
+      "Melhor 4K",
+      p => "Topo de linha para 4K: " + (p.v || "?") + " GB de VRAM e " + Math.round(p.fps) + " fps estimados em 1080p."
+    )
+  ].filter(Boolean);
+
+  $("picks").innerHTML = escolhas.map(e => cardHTML(e.p, { pick: true, tag: e.tag, why: e.why(e.p) })).join("");
+}
+
 function render() {
   const [min, max] = $("f-preco").value === "all" ? [0, 1e9] : $("f-preco").value.split("-").map(Number);
   const q = $("f-busca").value.trim().toLowerCase();
@@ -437,40 +546,10 @@ function render() {
   if (!list.length) { grid.innerHTML = ""; empty.classList.add("show"); return; }
   empty.classList.remove("show");
 
-  grid.innerHTML = list.map(p => {
-    const gpuClass = p.b === "nv" ? "gpu-nv" : "gpu-amd";
-    const perf = p.idx != null
-      ? Math.round(p.fps) + " fps (1080p est.) · " + p.idx.toFixed(1) + " pts · " + p.vpc.toFixed(1) + " fps por R$ 1.000"
-      : "sem índice de desempenho";
-    return '<article class="pc-card">' +
-      '<div class="pc-head">' +
-        '<div class="pc-tag-row">' +
-          '<span class="pc-tag ' + gpuClass + '">' + esc(p.g) + (p.v ? " " + p.v + "GB" : "") + '</span>' +
-          '<span class="pc-tag res">' + focoTxt(p.foco) + '</span>' +
-          '<span class="pc-tag store">' + esc(p.c) + '</span>' +
-          (p.k ? '<span class="pc-tag">Completo</span>' : '') +
-        '</div>' +
-        '<h3 class="pc-title" title="' + esc(p.n) + '">' + esc(p.n) + '</h3>' +
-      '</div>' +
-      '<div class="pc-specs">' +
-        '<div class="spec">CPU: <b>' + esc(p.cpu) + '</b></div>' +
-        '<div class="spec">RAM: <b>' + esc(p.r) + '</b></div>' +
-        '<div class="spec">Disco: <b>' + esc(p.s) + '</b></div>' +
-        '<div class="spec">Fonte: <b>' + esc(p.f) + '</b></div>' +
-        '<div class="spec wide">Desempenho: <b>' + perf + '</b></div>' +
-      '</div>' +
-      '<div class="pc-foot">' +
-        '<div class="price-block">' +
-          '<div class="preco">' + brl(p.p) + '</div>' +
-          (p.o ? '<div class="de">' + brl(p.o) + '</div>' : '') +
-          '<div class="loja">à vista · ' + esc(p.c) + '</div>' +
-        '</div>' +
-        '<a class="btn-ver" href="' + esc(p.u) + '" target="_blank" rel="noopener noreferrer">Ver oferta →</a>' +
-      '</div>' +
-    '</article>';
-  }).join("");
+  grid.innerHTML = list.map(p => cardHTML(p)).join("");
 }
 render();
+renderPicks();
 
 /* ==================== META-BUSCADOR ==================== */
 const state = { cpu: "", gpu: "", faixa: "", uso: "", ram: "", tipo: "pc gamer pronto", extra: "" };
