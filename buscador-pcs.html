@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Buscador de Computadores Gamer — ofertas com preço e link direto</title>
+<meta name="description" content="PCs gamers prontos com preço real e link direto da oferta no KaBuM e na Amazon. Filtre por preço, placa de vídeo, processador e resolução." />
+<style>
+  :root{
+    --bg:#0a0d14;
+    --panel:#121a2b;
+    --panel-2:#0e1524;
+    --border:rgba(255,255,255,.10);
+    --txt:#eef2ff;
+    --dim:#94a1bf;
+    --faint:#6b7691;
+    --nvidia:#76b900;
+    --amd:#ed1c24;
+    --intel:#0071c5;
+    --win:#22c55e;
+    --gold:#fbbf24;
+    --accent:#38bdf8;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;padding:26px 18px 60px;
+    font-family:'Segoe UI',system-ui,-apple-system,Roboto,sans-serif;
+    color:var(--txt);line-height:1.5;
+    background:
+      radial-gradient(900px 460px at 12% -10%, rgba(56,189,248,.11), transparent 60%),
+      radial-gradient(900px 460px at 88% -10%, rgba(118,185,0,.12), transparent 60%),
+      var(--bg);
+  }
+  .wrap{max-width:1180px;margin:0 auto}
+
+  /* ---------- topo ---------- */
+  .topo{text-align:center;margin-bottom:22px}
+  .topo h1{margin:0 0 6px;font-size:clamp(21px,3.4vw,30px);letter-spacing:-.02em;font-weight:800}
+  .topo h1 .pc{color:var(--accent)}
+  .topo p{margin:0;color:var(--dim);font-size:13.5px}
+  .nav-links{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:14px}
+  .nav-links a{
+    font-size:12.5px;color:var(--dim);text-decoration:none;
+    padding:6px 12px;border-radius:999px;border:1px solid var(--border);
+    background:var(--panel-2)
+  }
+  .nav-links a:hover{color:#fff;border-color:rgba(56,189,248,.6)}
+
+  /* ---------- abas ---------- */
+  .tabs{display:flex;justify-content:center;gap:8px;margin:18px 0 20px;flex-wrap:wrap}
+  .tab-btn{
+    background:var(--panel-2);border:1px solid var(--border);color:var(--dim);
+    padding:9px 18px;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit
+  }
+  .tab-btn:hover{color:#fff}
+  .tab-btn.on{background:rgba(56,189,248,.16);border-color:rgba(56,189,248,.6);color:#e0f2fe}
+  .tab-panel{display:none}
+  .tab-panel.on{display:block}
+
+  /* ---------- filtros ---------- */
+  .filters{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:18px}
+  .filters-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+  .field{display:flex;flex-direction:column;gap:6px}
+  .field label{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--faint)}
+  input, select{
+    width:100%;padding:11px 13px;font-size:14px;font-weight:600;
+    background:var(--panel-2);color:var(--txt);font-family:inherit;
+    border:1px solid var(--border);border-radius:11px;
+  }
+  input:focus, select:focus{outline:none;border-color:rgba(56,189,248,.6);box-shadow:0 0 0 3px rgba(56,189,248,.14)}
+  .seg{display:flex;border:1px solid var(--border);border-radius:11px;overflow:hidden;background:var(--panel-2)}
+  .seg button{
+    flex:1;background:transparent;border:0;color:var(--dim);font-family:inherit;font-size:12.5px;font-weight:700;
+    padding:10px 8px;cursor:pointer;white-space:nowrap
+  }
+  .seg button.on{background:rgba(56,189,248,.16);color:#e0f2fe}
+  .seg button.nv.on{background:rgba(118,185,0,.18);color:#d9f99d}
+  .seg button.amd.on{background:rgba(237,28,36,.18);color:#fecaca}
+  .seg button.intel.on{background:rgba(0,113,197,.18);color:#bfdbfe}
+  #seg-gpu button{font-size:11.5px;padding:10px 5px}
+
+  .hint{color:var(--dim);font-size:12.5px;margin-top:12px}
+  .hint b{color:var(--txt)}
+
+  /* ---------- resumo ---------- */
+  .count-row{display:flex;justify-content:space-between;align-items:center;margin:4px 0 16px;flex-wrap:wrap;gap:10px}
+  .count{color:var(--dim);font-size:13px}
+  .count b{color:var(--txt)}
+
+  /* ---------- cards ---------- */
+  .pc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+  .pc-card{background:var(--panel);border:1px solid var(--border);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;position:relative}
+  .pc-card::after{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:linear-gradient(90deg,var(--nvidia),var(--amd))}
+  .pc-head{padding:15px 17px 8px}
+  .pc-tag-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+  .pc-tag{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;padding:3px 9px;border-radius:999px;border:1px solid var(--border);color:var(--dim)}
+  .pc-tag.res{color:#bfdbfe;border-color:rgba(56,189,248,.4)}
+  .pc-tag.gpu-nv{color:#d9f99d;border-color:rgba(118,185,0,.4)}
+  .pc-tag.gpu-amd{color:#fecaca;border-color:rgba(237,28,36,.4)}
+  .pc-tag.store{color:#fde68a;border-color:rgba(251,191,36,.4)}
+  .pc-title{
+    font-size:14.5px;font-weight:800;letter-spacing:-.01em;margin:0;line-height:1.35;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  }
+  .pc-specs{display:grid;grid-template-columns:1fr 1fr;gap:7px 12px;padding:10px 17px 14px}
+  .spec{font-size:12px;color:var(--dim)}
+  .spec b{color:var(--txt);font-weight:700}
+  .spec.wide{grid-column:1 / -1;padding-top:7px;border-top:1px solid rgba(255,255,255,.06)}
+  .pc-foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 17px;border-top:1px solid rgba(255,255,255,.06);background:var(--panel-2)}
+  .price-block .preco{font-size:21px;font-weight:800;letter-spacing:-.02em;line-height:1.1}
+  .price-block .de{font-size:11.5px;color:var(--faint);text-decoration:line-through}
+  .price-block .loja{font-size:11.5px;color:var(--faint)}
+  .btn-ver{
+    background:linear-gradient(135deg,#16a34a,#22c55e);color:#04140a;
+    text-decoration:none;font-weight:800;font-size:12.5px;padding:10px 13px;border-radius:10px;white-space:nowrap
+  }
+  .btn-ver:hover{filter:brightness(1.08)}
+  .empty-state{display:none;text-align:center;padding:40px 20px;color:var(--dim);background:var(--panel);border:1px solid var(--border);border-radius:16px}
+  .empty-state.show{display:block}
+
+  /* ---------- meta-buscador ---------- */
+  .query-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;align-items:center}
+  .query-input{flex:1 1 280px;min-width:240px}
+  .btn-search{
+    background:linear-gradient(135deg,#0ea5e9,#38bdf8);color:#041018;
+    border:0;font-weight:800;font-size:14px;padding:12px 18px;border-radius:11px;cursor:pointer
+  }
+  .btn-search:hover{filter:brightness(1.08)}
+  .btn-clear{
+    background:var(--panel-2);color:var(--dim);border:1px solid var(--border);
+    font-weight:700;font-size:13px;padding:12px 16px;border-radius:11px;cursor:pointer
+  }
+  .btn-clear:hover{color:#fff}
+  .lojas-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:16px}
+  .loja-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px;text-decoration:none;color:var(--txt);display:flex;flex-direction:column;gap:6px;position:relative;overflow:hidden}
+  .loja-card::after{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:var(--accent)}
+  .loja-card:hover{border-color:rgba(56,189,248,.6)}
+  .loja-card .nome{font-size:16px;font-weight:800}
+  .loja-card .desc{font-size:12.5px;color:var(--dim)}
+  .loja-card .go{margin-top:6px;font-size:12.5px;color:#7dd3fc;font-weight:700}
+  .section-title{margin:26px 0 10px;font-size:13px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--faint)}
+
+  footer{margin-top:28px;padding-top:18px;border-top:1px solid var(--border);font-size:12px;color:var(--faint);line-height:1.65}
+  footer a{color:#38bdf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topo">
+    <h1>Buscador de <span class="pc">Computadores Gamer</span></h1>
+    <p>Ofertas reais com preço e <b>link direto do produto</b> no KaBuM e na Amazon. <b>Só PCs com memória DDR4.</b></p>
+    <div class="nav-links">
+      <a href="index.html">← Comparador de Placas</a>
+      <a href="painel-completo.html">Painel Completo</a>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn on" data-tab="catalogo">Ofertas com preço</button>
+    <button class="tab-btn" data-tab="busca">Busca por loja</button>
+  </div>
+
+  <!-- ============ ABA 1 — CATÁLOGO ============ -->
+  <div class="tab-panel on" id="tab-catalogo">
+    <div class="filters">
+      <div class="filters-grid">
+        <div class="field">
+          <label>Faixa de preço</label>
+          <select id="f-preco">
+            <option value="all">Qualquer preço</option>
+            <option value="0-2500">Até R$ 2.500</option>
+            <option value="2500-4000">R$ 2.500 – R$ 4.000</option>
+            <option value="4000-5500">R$ 4.000 – R$ 5.500</option>
+            <option value="5500-7000">R$ 5.500 – R$ 7.000</option>
+            <option value="7000-9000">R$ 7.000 – R$ 9.000</option>
+            <option value="9000-12000">R$ 9.000 – R$ 12.000</option>
+            <option value="12000-999999">Acima de R$ 12.000</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Processador</label>
+          <div class="seg" id="seg-cpu2">
+            <button data-cpu2="all" class="on">Todos</button>
+            <button data-cpu2="intel" class="intel">Intel</button>
+            <button data-cpu2="amd" class="amd">AMD</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Placa de vídeo</label>
+          <div class="seg" id="seg-gpu2">
+            <button data-gpu2="all" class="on">Todas</button>
+            <button data-gpu2="nv" class="nv">NVIDIA</button>
+            <button data-gpu2="amd" class="amd">AMD</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Resolução ideal</label>
+          <select id="f-foco">
+            <option value="all">Qualquer</option>
+            <option value="1080p">1080p</option>
+            <option value="1440p">1440p</option>
+            <option value="4k">4K</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Loja</label>
+          <select id="f-loja">
+            <option value="all">Todas</option>
+            <option value="KaBuM!">KaBuM!</option>
+            <option value="Amazon">Amazon</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Ordenar por</label>
+          <select id="f-ordem">
+            <option value="menor">Menor preço</option>
+            <option value="maior">Maior preço</option>
+            <option value="perf">Melhor desempenho</option>
+            <option value="vpc">Melhor custo-benefício</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Buscar</label>
+          <input id="f-busca" placeholder="Ex.: 4060, Ryzen 5, 32GB..." />
+        </div>
+      </div>
+      <div class="hint">
+        Preços de <b>23/10/2026</b>, à vista, coletados das páginas de oferta. O botão verde abre o produto exato na loja.
+        O catálogo mostra <b>apenas PCs com memória DDR4</b>. A base do desempenho é a mesma do comparador de placas (RTX 5090 = 100).
+      </div>
+    </div>
+
+    <div class="count-row">
+      <div class="count"><b id="count-pcs">0</b> oferta(s) · ordenadas por <b id="ordem-lbl">menor preço</b></div>
+    </div>
+
+    <div class="pc-grid" id="pc-grid"></div>
+    <div class="empty-state" id="empty-pcs">
+      <div style="font-size:18px;font-weight:800;margin-bottom:6px">Nenhum PC encontrado</div>
+      <div>Tente ajustar os filtros para ver mais opções.</div>
+    </div>
+  </div>
+
+  <!-- ============ ABA 2 — BUSCA POR LOJA ============ -->
+  <div class="tab-panel" id="tab-busca">
+    <div class="filters">
+      <div class="filters-grid">
+        <div class="field">
+          <label>Faixa de preço</label>
+          <select id="faixa">
+            <option value="">Qualquer preço</option>
+            <option value="pc gamer ate 2000">Até R$ 2.000</option>
+            <option value="pc gamer 2000 3000">R$ 2.000 – R$ 3.000</option>
+            <option value="pc gamer 3000 4000">R$ 3.000 – R$ 4.000</option>
+            <option value="pc gamer 4000 5000">R$ 4.000 – R$ 5.000</option>
+            <option value="pc gamer 5000 6000">R$ 5.000 – R$ 6.000</option>
+            <option value="pc gamer 6000 8000">R$ 6.000 – R$ 8.000</option>
+            <option value="pc gamer 8000 10000">R$ 8.000 – R$ 10.000</option>
+            <option value="pc gamer acima 10000">Acima de R$ 10.000</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Processador</label>
+          <div class="seg" id="seg-cpu">
+            <button data-cpu="" class="on">Todos</button>
+            <button data-cpu="intel" class="intel">Intel</button>
+            <button data-cpu="ryzen" class="amd">AMD</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Placa de vídeo</label>
+          <div class="seg" id="seg-gpu">
+            <button data-gpu="" class="on">Todas</button>
+            <button data-gpu="rtx" class="nv">NVIDIA</button>
+            <button data-gpu="radeon" class="amd">AMD</button>
+            <button data-gpu="integrado">Integrada</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Resolução / uso</label>
+          <select id="uso">
+            <option value="">Geral</option>
+            <option value="pc gamer 1080p">Foco 1080p</option>
+            <option value="pc gamer 1440p">Foco 1440p</option>
+            <option value="pc gamer competitivo">Competitivo</option>
+            <option value="pc gamer streaming">Streaming</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Memória RAM</label>
+          <select id="ram">
+            <option value="">Qualquer</option>
+            <option value="8gb">8 GB</option>
+            <option value="16gb">16 GB</option>
+            <option value="32gb">32 GB</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Tipo</label>
+          <select id="tipo">
+            <option value="pc gamer pronto">Pronto / montado</option>
+            <option value="pc gamer completo">Completo</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="query-row">
+        <input id="termo-extra" class="query-input" placeholder="Termo extra (ex.: branco, RGB, water cooler)..." />
+        <button class="btn-search" id="gerar">Gerar buscas</button>
+        <button class="btn-clear" id="limpar">Limpar</button>
+      </div>
+      <div class="hint">Use esta aba para Pichau, Magalu, Terabyte e Mercado Livre — essas lojas bloqueiam coleta automática, então o link leva à busca com os termos prontos.</div>
+    </div>
+
+    <div class="section-title">Buscar em</div>
+    <div class="lojas-grid" id="lojas"></div>
+  </div>
+
+  <footer>
+    <b>De onde vêm as ofertas.</b> A aba “Ofertas com preço” usa dados públicos das páginas de busca do <b>KaBuM!</b> e da <b>Amazon Brasil</b>, com link direto para cada produto. Pichau, Magalu, Terabyte e Mercado Livre bloqueiam acesso automatizado; por isso elas aparecem apenas na aba “Busca por loja”, que monta a URL de busca.<br />
+    <b>Desempenho.</b> O índice é o do comparador de placas (Tom’s Hardware, RTX 5090 = 100), e o FPS é uma média estimada — não é garantia para um jogo específico. Como o PC tem outros componentes, o resultado real pode variar.<br />
+    <b>Preços.</b> Coletados em 23/10/2026. Mudam a toda hora: confirme na loja antes de comprar.<br />
+    <b>Memória.</b> O catálogo inclui <b>somente PCs com DDR4</b>; máquinas DDR3 ou DDR5 ficam de fora, mesmo com preço bom.<br />
+    Voltar para: <a href="index.html">Comparador de Placas de Vídeo</a> · <a href="painel-completo.html">Painel Completo</a>
+  </footer>
+</div>
+
+<script>
+/* ==================== ABAS ==================== */
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('on'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('on'));
+    btn.classList.add('on');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('on');
+  };
+});
+
+/* ==================== BASE ==================== */
+/* n=nome, c=loja, p=preço, o=preço antigo, u=link, g=gpu, v=vram, b=marca,
+   cpu=processador, r=ram, s=ssd, f=fonte, k=1 se for completo (com monitor) */
+const PCS = [{"n":"PC CPU GAMER 6ª GERAÇÃO I5 6400 H110M 8GB DDR4 SSD 240GB RX 550 4GB Wifi","c":"Amazon","p":2279.05,"o":2399,"u":"https://www.amazon.com.br/dp/B0DFHZQ17G","g":"RX 550","v":4,"b":"amd","cpu":"i5 6400","r":"8GB DDR4","s":"240GB","f":"—","k":0},{"n":"PC Gamer RYZEN 5 5500, 8GB DDR4, SSD NVME 256, GTX 750 TI 4GB","c":"Amazon","p":2565.94,"o":2700.99,"u":"https://www.amazon.com.br/dp/B0HJHSD5CC","g":"GTX 750 Ti","v":4,"b":"nv","cpu":"Ryzen 5 5500","r":"8GB DDR4","s":"256GB","f":"—","k":0},{"n":"Pc Gamer Amd Ryzen 5 3600 16gb DDr4 Hd 1tb Rx 550 4gb","c":"Amazon","p":2824.92,"o":2973.6,"u":"https://www.amazon.com.br/dp/B09XBVPBRZ","g":"RX 550","v":4,"b":"amd","cpu":"Ryzen 5 3600","r":"16GB DDR4","s":"HD 1TB","f":"—","k":0},{"n":"PC Gamer Intel Core i5 6500, Radeon Rx 580 8GB, 16gb Ram, SSD 256gb Nvme, Fonte 600w, 5 Fans RGB, Preto - Bluepc Storm Pgbp-sto117","c":"KaBuM!","p":3059,"o":3398.89,"u":"https://www.kabum.com.br/produto/1046860/pc-gamer-intel-core-i5-6500-radeon-rx-580-8gb-16gb-ram-ssd-256gb-nvme-fonte-600w-5-fans-rgb-preto-bluepc-storm-pgbp-sto117","g":"RX 580","v":8,"b":"amd","cpu":"i5 6500","r":"16GB DDR4","s":"256GB","f":"600W","k":0},{"n":"PC GAMER INTEL I5 7400 7ª GERAÇÃO H110M 8GB DDR4 SSD 240GB 500W BIVOLT RTX 3050 6GB WIFI 3 FANS RGB","c":"Amazon","p":3182.5,"o":3350,"u":"https://www.amazon.com.br/dp/B0GMSB98RC","g":"RTX 3050","v":6,"b":"nv","cpu":"i5 7400","r":"8GB DDR4","s":"240GB","f":"500W","k":0},{"n":"PC Gamer Bluepc Rush - Intel Core i5 9400f 16gb Ddr4 Radeon Rx 580 8GB SSD 512gb - Pgbp-rus1025","c":"KaBuM!","p":3569,"o":3965.56,"u":"https://www.kabum.com.br/produto/903724/pc-gamer-bluepc-rush-intel-core-i5-9400f-16gb-ddr4-radeon-rx-580-8gb-ssd-512gb-pgbp-rus1025","g":"RX 580","v":8,"b":"amd","cpu":"i5 9400F","r":"16GB DDR4","s":"512GB","f":"—","k":0},{"n":"PC Gamer Completo Bluepc Rush - Intel Core i5 6500 16gb Ddr4 Radeon Rx 580 8GB SSD 512gb Monitor 23\" 75hz Full Hd - Pgbp-rus1052","c":"KaBuM!","p":3579,"o":3976.67,"u":"https://www.kabum.com.br/produto/902348/pc-gamer-completo-bluepc-rush-intel-core-i5-6500-16gb-ddr4-radeon-rx-580-8gb-ssd-512gb-monitor-23-75hz-full-hd-pgbp-rus1052","g":"RX 580","v":8,"b":"amd","cpu":"i5 6500","r":"16GB DDR4","s":"512GB","f":"—","k":1},{"n":"PC Gamer Amd Ryzen 5, Rx 580, 8GB Ddr4, SSD 240GB, 500w 80 Plus, C7zobx6z-e","c":"KaBuM!","p":3672.26,"o":null,"u":"https://www.kabum.com.br/produto/1061968/pc-gamer-amd-ryzen-5-rx-580-8gb-ddr4-ssd-240gb-500w-80-plus-c7zobx6z-e","g":"RX 580","v":8,"b":"amd","cpu":"Ryzen 5","r":"8GB DDR4","s":"240GB","f":"500W","k":0},{"n":"PC Gamer Bluepc Rush - Amd Ryzen 5 5500 16gb Ddr4 Radeon Rx 580 8GB SSD 512gb - Pgbp-rus1013","c":"KaBuM!","p":3679,"o":4087.78,"u":"https://www.kabum.com.br/produto/904954/pc-gamer-bluepc-rush-amd-ryzen-5-5500-16gb-ddr4-radeon-rx-580-8gb-ssd-512gb-pgbp-rus1013","g":"RX 580","v":8,"b":"amd","cpu":"Ryzen 5 5500","r":"16GB DDR4","s":"512GB","f":"—","k":0},{"n":"PC GAMER INTEL I7 6700 6ª GERAÇÃO H110M 2X 8GB DDR4 SSD 240GB 500W BIVOLT RTX 3050 6GB WIFI 3 FANS RGB","c":"Amazon","p":3704.05,"o":3899,"u":"https://www.amazon.com.br/dp/B0GMXHG91Q","g":"RTX 3050","v":6,"b":"nv","cpu":"i7 6700","r":"16GB DDR4","s":"240GB","f":"500W","k":0},{"n":"PC Gamer Skill Apex Series, AMD Ryzen 5 5500, Radeon RX 580 8GB, 16GB DDR4, SSD 256GB M.2, Preto SAS004","c":"Amazon","p":3707.99,"o":4119.99,"u":"https://www.amazon.com.br/dp/B0FW6W5ZZQ","g":"RX 580","v":8,"b":"amd","cpu":"Ryzen 5 5500","r":"16GB DDR4","s":"256GB","f":"—","k":0},{"n":"PC Gamer Skill Apex Series, Amd Ryzen 5 5500, Radeon Rx 580 8GB, 16gb Ddr4, SSD 256gb M.2, Preto Sas004","c":"KaBuM!","p":3707.99,"o":4119.99,"u":"https://www.kabum.com.br/produto/912217/pc-gamer-skill-apex-series-amd-ryzen-5-5500-radeon-rx-580-8gb-16gb-ddr4-ssd-256gb-m-2-preto-sas004","g":"RX 580","v":8,"b":"amd","cpu":"Ryzen 5 5500","r":"16GB DDR4","s":"256GB","f":"—","k":0},{"n":"PC GAMER INTEL I7 7700 7ª GERAÇÃO H110M 8GB DDR4 SSD 240GB 500W BIVOLT RTX 3050 6GB WIFI 3 FANS RGB","c":"Amazon","p":3752.5,"o":3950,"u":"https://www.amazon.com.br/dp/B0GMS6RZW6","g":"RTX 3050","v":6,"b":"nv","cpu":"i7 7700","r":"8GB DDR4","s":"240GB","f":"500W","k":0},{"n":"PC GAMER AMD RYZEN 5 5500 16GB NVME 500GB 500W 80 PLUS RX 580 8GB","c":"Amazon","p":3799.05,"o":3999,"u":"https://www.amazon.com.br/dp/B0CY3V25FD","g":"RX 580","v":8,"b":"amd","cpu":"Ryzen 5 5500","r":"16GB DDR4","s":"500GB","f":"500W","k":0},{"n":"PC Gamer BluePC Intel Core I5 9400f ( 9ª Geração ) 16gb Ddr4 RTX 3050 6gb SSD 240GB","c":"KaBuM!","p":3939,"o":4376.67,"u":"https://www.kabum.com.br/produto/617117/pc-gamer-bluepc-intel-core-i5-9400f-9-geracao-16gb-ddr4-rtx-3050-6gb-ssd-240gb","g":"RTX 3050","v":6,"b":"nv","cpu":"i5 9400F","r":"16GB DDR4","s":"240GB","f":"—","k":0},{"n":"PC GAMER INTEL CORE I7 6700 6ª GERAÇÃO 16GB SSD 480GB RTX 3050","c":"Amazon","p":3947.25,"o":4155,"u":"https://www.amazon.com.br/dp/B0DX2J4QPC","g":"RTX 3050","v":8,"b":"nv","cpu":"i7 6700","r":"16GB DDR4","s":"480GB","f":"—","k":0},{"n":"PC GAMER CORE I5 6500, 16GB DDR4, SSD M.2 NVME 500W, RTX 3050 6GB","c":"Amazon","p":4039.39,"o":4251.99,"u":"https://www.amazon.com.br/dp/B0GMRG9CVZ","g":"RTX 3050","v":6,"b":"nv","cpu":"i5 6500","r":"16GB DDR4","s":"—","f":"500W","k":0},{"n":"PC Gamer Skill Apex Series, Amd Ryzen 5 5500, Radeon Rx 580 8GB, 16gb Ddr4, SSD 1TB M.2, Preto Sas006","c":"KaBuM!","p":4049.1,"o":4499,"u":"https://www.kabum.com.br/produto/912212/pc-gamer-skill-apex-series-amd-ryzen-5-5500-radeon-rx-580-8gb-16gb-ddr4-ssd-1tb-m-2-preto-sas006","g":"RX 580","v":8,"b":"amd","cpu":"Ryzen 5 5500","r":"16GB DDR4","s":"1TB","f":"—","k":0},{"n":"PC Gamer BRX 51067038 Intel Core i5 12400F 16GB RAM 512GB SSD Placa de Vídeo Radeon RX 580 16GB Windows 11","c":"KaBuM!","p":4049.1,"o":4499,"u":"https://www.kabum.com.br/produto/958780/pc-gamer-brx-51067038-intel-core-i5-12400f-16gb-ram-512gb-ssd-placa-de-video-radeon-rx-580-16gb-windows-11","g":"RX 580","v":16,"b":"amd","cpu":"i5 12400F","r":"16GB DDR4","s":"512GB","f":"—","k":0},{"n":"PC Gamer 2eletro Fps Intel Core i5 6500, 16gb Ddr4, Geforce RTX 3050 8GB, SSD 1TB , Fonte 600w - Pg2e-0101fp","c":"KaBuM!","p":4229,"o":4698.89,"u":"https://www.kabum.com.br/produto/880510/pc-gamer-2eletro-fps-intel-core-i5-6500-16gb-ddr3-geforce-rtx-3050-8gb-ssd-1tb-fonte-600w-pg2e-0101fp","g":"RTX 3050","v":8,"b":"nv","cpu":"i5 6500","r":"16GB DDR4","s":"1TB","f":"600W","k":0},{"n":"PC GAMER INTEL I7 7700 7ª GERAÇÃO H110M 2X 8GB DDR4 SSD 240GB 500W BIVOLT RX 6600 8GB WIFI 3 FANS RGB","c":"Amazon","p":4246.5,"o":4470,"u":"https://www.amazon.com.br/dp/B0GMS1H6HK","g":"RX 6600","v":8,"b":"amd","cpu":"i7 7700","r":"16GB DDR4","s":"240GB","f":"500W","k":0},{"n":"PC GAMER CORE I7 6700, 16GB DDR4, SSD M.2 NVME 500W, RTX 3050 6GB","c":"Amazon","p":4265.49,"o":4489.99,"u":"https://www.amazon.com.br/dp/B0GMS49HWS","g":"RTX 3050","v":6,"b":"nv","cpu":"i7 6700","r":"16GB DDR4","s":"—","f":"500W","k":0},{"n":"PC Gamer Live Ryzen 5 5500, 16GB RAM RGB, NVME M.2 500GB, RTX 3050 6GB, Gabinete com 4 Ventoinhas RGB","c":"Amazon","p":4273.1,"o":4498,"u":"https://www.amazon.com.br/dp/B0H4RQ4G9R","g":"RTX 3050","v":6,"b":"nv","cpu":"Ryzen 5 5500","r":"16GB DDR4","s":"500GB","f":"—","k":0},{"n":"PC Gamer KaBuM! 5500F, Radeon RX 7600, 16GB DDR4, SSD 480G","c":"KaBuM!","p":4284.99,"o":4761.1,"u":"https://www.kabum.com.br/produto/1076256/pc-gamer-kabum-5500f-radeon-rx-7600-16gb-ddr4-ssd-480g","g":"RX 7600","v":8,"b":"amd","cpu":"Ryzen 5 5500F","r":"16GB DDR4","s":"480GB","f":"—","k":0},{"n":"PC Gamer Ludic By Bluepc - Amd Ryzen 5 5500, Geforce RTX 3050 6gb, 16gb Ram, SSD 512gb M.2 Nvme, 600w 80 Plus, Preto, 7 Fans RGB - Pgbp-lu2100","c":"KaBuM!","p":4299,"o":4776.67,"u":"https://www.kabum.com.br/produto/1011985/pc-gamer-ludic-by-bluepc-amd-ryzen-5-5500-geforce-rtx-3050-6gb-16gb-ram-ssd-512gb-m-2-nvme-600w-80-plus-preto-7-fans-rgb-pgbp-lu2100","g":"RTX 3050","v":6,"b":"nv","cpu":"Ryzen 5 5500","r":"16GB DDR4","s":"512GB","f":"600W","k":0},{"n":"PC Gamer Bluepc Frag, Amd Ryzen 5 5500, Radeon Rx 6600 8GB, B450, 16gb Ddr4, SSD 512gb Nvme - Pgbp-fra205","c":"KaBuM!","p":4399,"o":4887.78,"u":"https://www.kabum.com.br/produto/938507/pc-gamer-bluepc-frag-amd-ryzen-5-5500-radeon-rx-6600-8gb-b450-16gb-ddr4-ssd-512gb-nvme-pgbp-fra205","g":"RX 6600","v":8,"b":"amd","cpu":"Ryzen 5 5500","r":"16GB DDR4","s":"512GB","f":"—","k":0},{"n":"PC Gamer Bluepc Frag, Amd Ryzen 5 , Radeon Rx 6600 8GB, B450, 16gb Ddr4, SSD 512gb Nvme - Pgbp-fra204","c":"KaBuM!","p":4439,"o":4932.22,"u":"https://www.kabum.com.br/produto/938386/pc-gamer-bluepc-frag-amd-ryzen-5-radeon-rx-6600-8gb-b450-16gb-ddr4-ssd-512gb-nvme-pgbp-fra204","g":"RX 6600","v":8,"b":"amd","cpu":"Ryzen 5","r":"16GB DDR4","s":"512GB","f":"—","k":0},{"n":"PC GAMER RYZEN 5 5500 A520M 2X 8GB 3200MHZ SSD 240GB BIVOLT RX 6600 8GB - MONITOR 24''","c":"Amazon","p":4738.6,"o":4988,"u":"https://www.amazon.com.br/dp/B0GRP2GBLY","g":"RX 6600","v":8,"b":"amd","cpu":"Ryzen 5 5500","r":"16GB DDR4","s":"240GB","f":"—","k":1},{"n":"PC Gamer Completo Bluepc Frag, Intel Core i5 9400f, Radeon Rx 6600 8GB, 16gb Ddr4, SSD 512gb Nvme, Monitor 23\" 75hz, Kit Gamer - Pgbp-fra252","c":"KaBuM!","p":4859,"o":5398.89,"u":"https://www.kabum.com.br/produto/942948/pc-gamer-completo-bluepc-frag-intel-core-i5-9400f-radeon-rx-6600-8gb-16gb-ddr4-ssd-512gb-nvme-monitor-23-75hz-kit-gamer-pgbp-fra252","g":"RX 6600","v":8,"b":"amd","cpu":"i5 9400F","r":"16GB DDR4","s":"512GB","f":"—","k":1},{"n":"PC Gamer Ludic By Bluepc - Amd Ryzen 5 5500, Radeon Rx 6600 8GB, 16gb Ram, SSD 1TB M.2 Nvme, 600w 80 Plus, Preto, 7 Fans RGB - Pgbp-lu2126","c":"KaBuM!","p":4899,"o":5443.33,"u":"https://www.kabum.com.br/produto/1014895/pc-gamer-ludic-by-bluepc-amd-ryzen-5-5500-radeon-rx-6600-8gb-16gb-ram-ssd-1tb-m-2-nvme-600w-80-plus-preto-7-fans-rgb-pgbp-lu2126","g":"RX 6600","v":8,"b":"amd","cpu":"Ryzen 5 5500","r":"16GB DDR4","s":"1TB","f":"600W","k":0},{"n":"PC GAMER I2ª GERAÇÃO I5 12400F 16GB 3200MHZ SSD 240GB WATER 240MM RX 6600 WIFI","c":"Amazon","p":4940,"o":5200,"u":"https://www.amazon.com.br/dp/B0GMK3Z61J","g":"RX 6600","v":8,"b":"amd","cpu":"i5 12400F","r":"16GB DDR4","s":"240GB","f":"—","k":0},{"n":"PC Gamer BluePC FRAG, Intel Core i5 9400F, Radeon RX 6600 8GB, 16GB DDR4, SSD 512GB NVMe - PGBP-FRA213","c":"Amazon","p":4969,"o":5230.53,"u":"https://www.amazon.com.br/dp/B0FVB1FVZH","g":"RX 6600","v":8,"b":"amd","cpu":"i5 9400F","r":"16GB DDR4","s":"512GB","f":"—","k":0},{"n":"PC Gamer Completo Ryzen 5 5500, RTX 2060, 16gb Ddr4, SSD 480GB, 600w 80 Plus, PC26r04-e","c":"KaBuM!","p":4981.16,"o":5414.3,"u":"https://www.kabum.com.br/produto/1045756/pc-gamer-completo-ryzen-5-5500-rtx-2060-16gb-ddr4-ssd-480gb-600w-80-plus-pc26r04-e","g":"RTX 2060","v":null,"b":"nv","cpu":"Ryzen 5 5500","r":"16GB DDR4","s":"480GB","f":"600W","k":1},{"n":"PC Gamer 2eletro Fps Intel Core i5 6500, 16gb Ddr4, Geforce RTX 3060 12gb, SSD 480GB, Fonte 600w - Pg2e-0106fp","c":"KaBuM!","p":5019,"o":5576.67,"u":"https://www.kabum.com.br/produto/880507/pc-gamer-2eletro-fps-intel-core-i5-6500-16gb-ddr3-geforce-rtx-3060-12gb-ssd-480gb-fonte-600w-pg2e-0106fp","g":"RTX 3060","v":12,"b":"nv","cpu":"i5 6500","r":"16GB DDR4","s":"480GB","f":"600W","k":0},{"n":"PC Gamer Completo Ryzen 5 4500, RTX 2060, 16gb Ddr4, SSD Nvme 500gb, 600w 80 Plus, PCr7g41-e","c":"KaBuM!","p":5096.03,"o":5539.16,"u":"https://www.kabum.com.br/produto/1045746/pc-gamer-completo-ryzen-5-4500-rtx-2060-16gb-ddr4-ssd-nvme-500gb-600w-80-plus-pcr7g41-e","g":"RTX 2060","v":null,"b":"nv","cpu":"Ryzen 5 4500","r":"16GB DDR4","s":"500GB","f":"600W","k":1},{"n":"PC Gamer Ludic By Bluepc - Amd Ryzen 5 5500, Radeon Rx 7600 8GB, 16gb Ram, SSD 512gb M.2 Nvme, 600w 80 Plus, Preto, 7 Fans RGB - Pgbp-lu2107","c":"KaBuM!","p":5099,"o":5665.56,"u":"https://www.kabum.com.br/produto/1012274/pc-gamer-ludic-by-bluepc-amd-ryzen-5-5500-radeon-rx-7600-8gb-16gb-ram-ssd-512gb-m-2-nvme-600w-80-plus-preto-7-fans-rgb-pgbp-lu2107","g":"RX 7600","v":8,"b":"amd","cpu":"Ryzen 5 5500","r":"16GB DDR4","s":"512GB","f":"600W","k":0},{"n":"PC Gamer Ryzen 5 5500, RTX 3060, 16gb Ddr4, SSD 480GB, 600w 80 Plus, S7r9094x-e","c":"KaBuM!","p":5290.43,"o":5750.47,"u":"https://www.kabum.com.br/produto/697118/pc-gamer-ryzen-5-5500-rtx-3060-16gb-ddr4-ssd-480gb-600w-80-plus","g":"RTX 3060","v":12,"b":"nv","cpu":"Ryzen 5 5500","r":"16GB DDR4","s":"480GB","f":"600W","k":0},{"n":"PC Gamer ARVEX AMD Ryzen 5 5500, Radeon RX 6600 8GB, Memória 16GB DDR4, SSD 480GB","c":"Amazon","p":5300.9,"o":5579.9,"u":"https://www.amazon.com.br/dp/B0FY7HBVFD","g":"RX 6600","v":8,"b":"amd","cpu":"Ryzen 5 5500","r":"16GB DDR4","s":"480GB","f":"—","k":0},{"n":"PC Gamer AquArio Branco Ryzen 5 5500 | RX 6600 8GB Branca | 16GB RAM | SSD NVMe 500GB | Windows 11 Pro","c":"KaBuM!","p":5349,"o":5943.33,"u":"https://www.kabum.com.br/produto/595276/pc-gamer-aquario-branco-ryzen-5-5500-rx-6600-8gb-branca-16gb-ram-ssd-nvme-500gb-windows-11-pro","g":"RX 6600","v":8,"b":"amd","cpu":"Ryzen 5 5500","r":"16GB DDR4","s":"500GB","f":"—","k":0},{"n":"PC Gamer Ryzen 5 5500, RTX 4060, 16gb Ddr4, SSD Nvme 500gb, 600w 80 Plus, Aquapc01-e","c":"KaBuM!","p":5385.09,"o":5853.36,"u":"https://www.kabum.com.br/produto/697183/pc-gamer-ryzen-5-5500-rtx-4060-16gb-ddr4-ssd-nvme-500gb-600w-80-plus-aquapc01-e","g":"RTX 4060","v":8,"b":"nv","cpu":"Ryzen 5 5500","r":"16GB DDR4","s":"500GB","f":"600W","k":0},{"n":"PC Gamer Ryzen 5 5500, Rx 7600, 16gb Ddr4, SSD 500gb Nvme, 600w 80 Plus, PCital03-e","c":"KaBuM!","p":5433.25,"o":5905.71,"u":"https://www.kabum.com.br/produto/697219/pc-gamer-ryzen-5-5500-rx-7600-16gb-ddr4-ssd-500gb-nvme-600w-80-plus-pcital03-e","g":"RX 7600","v":8,"b":"amd","cpu":"Ryzen 5 5500","r":"16GB DDR4","s":"500GB","f":"600W","k":0},{"n":"PC Gamer Amd Ryzen 5 5500, Rx 7600 Oc 8GB, 16gb Ram, SSD Nvme 256gb","c":"KaBuM!","p":5439.15,"o":6399,"u":"https://www.kabum.com.br/produto/1081312/pc-gamer-amd-ryzen-5-5500-rx-7600-oc-8gb-16gb-ram-ssd-nvme-256gb","g":"RX 7600","v":8,"b":"amd","cpu":"Ryzen 5 5500","r":"16GB DDR4","s":"256GB","f":"—","k":0},{"n":"PC Gamer Ludic By Bluepc - Amd Ryzen 5 5500, Geforce RTX 3060 12gb, 16gb Ddr4, SSD 512gb M.2 Nvme, Fonte 600w 80 Plus - Pgbp-1002lud","c":"KaBuM!","p":5579,"o":6198.89,"u":"https://www.kabum.com.br/produto/706095/pc-gamer-ludic-by-bluepc-amd-ryzen-5-5500-geforce-rtx-3060-12gb-16gb-ram-ssd-512gb-m-2-nvme-fonte-600w-80-plus-pgbp-1002lud","g":"RTX 3060","v":12,"b":"nv","cpu":"Ryzen 5 5500","r":"16GB DDR4","s":"512GB","f":"600W","k":0},{"n":"PC Gamer BluePC Intel Core I5 12400f (12ª Geração) 8GB Ddr4 RTX 4060 8GB SSD 240GB - Fonte 650w","c":"KaBuM!","p":5749,"o":6387.78,"u":"https://www.kabum.com.br/produto/587181/pc-gamer-bluepc-intel-core-i5-12400f-12-geracao-8gb-ddr4-rtx-4060-8gb-ssd-240gb-fonte-650w","g":"RTX 4060","v":8,"b":"nv","cpu":"i5 12400F","r":"8GB DDR4","s":"240GB","f":"650W","k":0},{"n":"PC Gamer Ludic By Bluepc - Amd Ryzen 5 5500, Radeon Rx 7600 8GB, 16gb Ram, SSD 1TB M.2 Nvme, 600w 80 Plus, Preto, 7 Fans RGB - Pgbp-lu2127","c":"KaBuM!","p":5749,"o":6387.78,"u":"https://www.kabum.com.br/produto/1012289/pc-gamer-ludic-by-bluepc-amd-ryzen-5-5500-radeon-rx-7600-8gb-16gb-ram-ssd-1tb-m-2-nvme-600w-80-plus-preto-7-fans-rgb-pgbp-lu2127","g":"RX 7600","v":8,"b":"amd","cpu":"Ryzen 5 5500","r":"16GB DDR4","s":"1TB","f":"600W","k":0},{"n":"PC Gamer Alligator Shop AMD Ryzen 5 5500, Geforce RTX 4060 8GB, Memória 16GB DDR4, SSD 480GB","c":"Amazon","p":5785.4,"o":6089.9,"u":"https://www.amazon.com.br/dp/B0DWT83HZP","g":"RTX 4060","v":8,"b":"nv","cpu":"Ryzen 5 5500","r":"16GB DDR4","s":"480GB","f":"—","k":0},{"n":"PC Gamer Ludic By Bluepc - Amd Ryzen 5 5500, Geforce RTX 5060 8GB Gddr7, 16gb Ddr4, SSD 512gb M.2 Nvme, Fonte 600w 80 Plus - Pgbp-1003lud","c":"KaBuM!","p":5789,"o":6432.22,"u":"https://www.kabum.com.br/produto/706014/pc-gamer-ludic-by-bluepc-amd-ryzen-5-5500-16gb-ram-geforce-rtx-4060-8gb-ssd-512gb-m-2-nvme-fonte-600w-80-plus","g":"RTX 5060","v":8,"b":"nv","cpu":"Ryzen 5 5500","r":"16GB DDR4","s":"512GB","f":"600W","k":0},{"n":"PC Gamer Completo 2eletro Fps Intel Core i5 6500, 16gb Ddr4, Geforce RTX 3060 12gb, SSD 1TB, Fonte 600w, Monitor 23\"full Hd 75hz - Pg2e-0111fp","c":"KaBuM!","p":5799,"o":6443.33,"u":"https://www.kabum.com.br/produto/880474/pc-gamer-completo-2eletro-fps-intel-core-i5-6500-16gb-ddr4-geforce-rtx-3060-12gb-ssd-1tb-fonte-600w-monitor-23-full-hd-75hz-pg2e-0111fp","g":"RTX 3060","v":12,"b":"nv","cpu":"i5 6500","r":"16GB DDR4","s":"1TB","f":"600W","k":1},{"n":"PC Gamer Ryzen 5 5500, RTX 5060, 16gb Ddr4, SSD Nvme 500gb, 600w 80 Plus, 344ykte1-e","c":"KaBuM!","p":5810.78,"o":6316.07,"u":"https://www.kabum.com.br/produto/1046255/pc-gamer-ryzen-5-5500-rtx-5060-16gb-ddr4-ssd-nvme-500gb-600w-80-plus-344ykte1-e","g":"RTX 5060","v":8,"b":"nv","cpu":"Ryzen 5 5500","r":"16GB DDR4","s":"500GB","f":"600W","k":0},{"n":"Computador PC Gamer Amd Ryzen 5 5600g 16gb Ram SSD 480GB RTX 2060 Monitor 23\" Curvo - Branco","c":"KaBuM!","p":5836.61,"o":6143.8,"u":"https://www.kabum.com.br/produto/716532/computador-pc-gamer-amd-ryzen-5-5600g-16gb-ram-ssd-480gb-rtx-2060-monitor-23-curvo-branco","g":"RTX 2060","v":null,"b":"nv","cpu":"Ryzen 5 5600G","r":"16GB DDR4","s":"480GB","f":"—","k":1},{"n":"PC Gamer Skill Aquarium,  Intel Core I5 10400F, 16GB, Geforce RTX 3060 12GB, SSD 512GB M.2, Fonte 600W 80 Plus, Branco SKA085","c":"KaBuM!","p":5930.99,"o":6589.99,"u":"https://www.kabum.com.br/produto/705175/pc-gamer-skill-aquarium-intel-core-i5-10400f-16gb-3200mhz-geforce-rtx-3060-12gb-ssd-512gb-m-2-fonte-600w-80-plus-branco-ska085","g":"RTX 3060","v":12,"b":"nv","cpu":"i5 10400F","r":"16GB DDR4","s":"512GB","f":"600W","k":0},{"n":"PC Gamer Ludic By Bluepc - Amd Ryzen 5 5500, Geforce RTX 3060 12gb, 16gb Ram, SSD 1TB M.2 Nvme, Fonte 600w 80 Plus - Pgbp-1211lud","c":"KaBuM!","p":6029,"o":6698.89,"u":"https://www.kabum.com.br/produto/706145/pc-gamer-ludic-by-bluepc-amd-ryzen-5-5500-geforce-rtx-3060-12gb-16gb-ram-ssd-1tb-m-2-nvme-fonte-600w-80-plus-pgbp-1211lud","g":"RTX 3060","v":12,"b":"nv","cpu":"Ryzen 5 5500","r":"16GB DDR4","s":"1TB","f":"600W","k":0},{"n":"PC Gamer Skill Aquarium, Intel Core I5 12400F, 16GB, Geforce RTX 3060 12GB, SSD 512GB M.2, Fonte 600W 80 Plus, Preto SKA046","c":"KaBuM!","p":6029.99,"o":6699.99,"u":"https://www.kabum.com.br/produto/661625/pc-gamer-skill-aquarium-intel-core-i5-12400f-16gb-3200mhz-geforce-rtx-3060-12gb-ssd-512gb-m-2-fonte-600w-80-plus-preto-ska046","g":"RTX 3060","v":12,"b":"nv","cpu":"i5 12400F","r":"16GB DDR4","s":"512GB","f":"600W","k":0},{"n":"PC Gamer Aquario Branco Ryzen 5 5500 | RTX 2060 Super 8GB | 16GB Ram | SSD Nvme 1TB | Win11 Pro","c":"KaBuM!","p":6108.99,"o":6787.77,"u":"https://www.kabum.com.br/produto/633676/pc-gamer-aquario-branco-ryzen-5-5500-rtx-2060-super-8gb-16gb-ram-ssd-nvme-1tb-win11-pro","g":"RTX 2060 Super","v":8,"b":"nv","cpu":"Ryzen 5 5500","r":"16GB DDR4","s":"1TB","f":"—","k":0},{"n":"Pc Gamer BluePC Intel Core I5 12400f (12ª Geração) 16gb Ddr4 Rtx 4060 8gb Ssd 240gb - Fonte 650w","c":"KaBuM!","p":6129,"o":6810,"u":"https://www.kabum.com.br/produto/587191/pc-gamer-bluepc-intel-core-i5-12400f-12-geracao-16gb-ddr4-rtx-4060-8gb-ssd-240gb-fonte-650w","g":"RTX 4060","v":8,"b":"nv","cpu":"i5 12400F","r":"16GB DDR4","s":"240GB","f":"650W","k":0},{"n":"PC Gamer Ludic By Bluepc - Amd Ryzen 5 5500, Radeon Rx 7600 8GB, 32gb Ram, SSD 512gb M.2 Nvme, 600w 80 Plus, Preto, 7 Fans RGB - Pgbp-lu2117","c":"KaBuM!","p":6149,"o":6832.22,"u":"https://www.kabum.com.br/produto/1012288/pc-gamer-ludic-by-bluepc-amd-ryzen-5-5500-radeon-rx-7600-8gb-32gb-ram-ssd-512gb-m-2-nvme-600w-80-plus-preto-7-fans-rgb-pgbp-lu2117","g":"RX 7600","v":8,"b":"amd","cpu":"Ryzen 5 5500","r":"32GB DDR4","s":"512GB","f":"600W","k":0},{"n":"PC GAMER HERTZ® RYZEN 5 5500 RTX 5060 8GB 16GB NVME 500GB GABINETE GAMER","c":"Amazon","p":6165.5,"o":6490,"u":"https://www.amazon.com.br/dp/B0H6JZ292F","g":"RTX 5060","v":8,"b":"nv","cpu":"Ryzen 5 5500","r":"16GB DDR4","s":"500GB","f":"—","k":0},{"n":"PC Gamer Ludic By Bluepc - Amd Ryzen 5 5500, Geforce RTX 4060 8GB, 16gb Ram, SSD 1TB M.2 Nvme, Fonte 600w 80 Plus - Pgbp-1008lud","c":"KaBuM!","p":6169,"o":6854.44,"u":"https://www.kabum.com.br/produto/706033/pc-gamer-ludic-by-bluepc-amd-ryzen-5-5500-geforce-rtx-4060-8gb-16gb-ram-ssd-1tb-m-2-nvme-fonte-600w-80-plus-pgbp-1008lud","g":"RTX 4060","v":8,"b":"nv","cpu":"Ryzen 5 5500","r":"16GB DDR4","s":"1TB","f":"600W","k":0},{"n":"PC Gamer Intel Core i5 12400f, Rx 7600, 16gb Ram, Nvme 500gb, W11 - Kalango Games","c":"KaBuM!","p":6319.2,"o":null,"u":"https://www.kabum.com.br/produto/705608/pc-gamer-intel-core-i5-12400f-rx-6600-16gb-ram-nvme-500gb-w10","g":"RX 7600","v":8,"b":"amd","cpu":"i5 12400F","r":"16GB DDR4","s":"500GB","f":"—","k":0},{"n":"Pc Gamer BluePC Intel Core I5 12400f (12ª Geração) 8gb Ddr4 Rtx 4060 8gb Ssd 960gb - Fonte 650w","c":"KaBuM!","p":6369,"o":7076.67,"u":"https://www.kabum.com.br/produto/587192/pc-gamer-bluepc-intel-core-i5-12400f-12-geracao-8gb-ddr4-rtx-4060-8gb-ssd-960gb-fonte-650w","g":"RTX 4060","v":8,"b":"nv","cpu":"i5 12400F","r":"8GB DDR4","s":"960GB","f":"650W","k":0},{"n":"PC Gamer Bluepc Intel I5 12400f 16gb RTX 4060 8GB SSD 480GB Gab Branco - Fonte 650w","c":"KaBuM!","p":6439,"o":7154.44,"u":"https://www.kabum.com.br/produto/629832/pc-gamer-bluepc-intel-i5-12400f-16gb-rtx-4060-8gb-ssd-480gb-gab-branco-fonte-650w","g":"RTX 4060","v":8,"b":"nv","cpu":"i5 12400F","r":"16GB DDR4","s":"480GB","f":"650W","k":0},{"n":"PC Gamer Ludic By Bluepc - Intel Core i5 12400f, Geforce RTX 3060 12gb, 16gb Ddr4, SSD 1TB M.2 Nvme, Fonte 600w 80 Plus - Pgbp-1033lud","c":"KaBuM!","p":6479,"o":7198.89,"u":"https://www.kabum.com.br/produto/706020/pc-gamer-ludic-by-bluepc-intel-core-i5-12400f-geforce-rtx-3060-12gb-16gb-ram-ssd-1tb-fonte-600w-80-plus-pgbp-1033lud","g":"RTX 3060","v":12,"b":"nv","cpu":"i5 12400F","r":"16GB DDR4","s":"1TB","f":"600W","k":0},{"n":"PC Gamer Ryzen 5 5600, RTX 5060, 16GB RGB DDR4, SSD NVMe 500GB, 600W 80 Plus, TIGER02-E, Windows 11 Pro","c":"Amazon","p":6484.56,"o":null,"u":"https://www.amazon.com.br/dp/B0FXBJRPG6","g":"RTX 5060","v":8,"b":"nv","cpu":"Ryzen 5 5600","r":"16GB DDR4","s":"500GB","f":"600W","k":0},{"n":"PC Gamer Ludic By Bluepc - Amd Ryzen 7 5700x, Geforce RTX 5060 8GB Gddr7, 16gb Ddr4, SSD 512gb M.2 Nvme, Fonte 600w 80 Plus - Pgbp-1217lud","c":"KaBuM!","p":6499,"o":7221.11,"u":"https://www.kabum.com.br/produto/706171/pc-gamer-ludic-by-bluepc-amd-ryzen-7-5700x-geforce-rtx-4060-8gb-16gb-ram-ssd-512gb-m-2-nvme-fonte-600w-80-plus-pgbp-1217lud","g":"RTX 5060","v":8,"b":"nv","cpu":"Ryzen 7 5700X","r":"16GB DDR4","s":"512GB","f":"600W","k":0},{"n":"PC Gamer Ludic By Bluepc - Amd Ryzen 7 5700x, Geforce RTX 3060 12gb, 16gb Ddr4, SSD 512gb M.2 Nvme, Fonte 600w 80 Plus - Pgbp-1012lud","c":"KaBuM!","p":6499,"o":7221.11,"u":"https://www.kabum.com.br/produto/706021/pc-gamer-ludic-by-bluepc-amd-ryzen-7-5700x-geforce-rtx-3060-12gb-16gb-ram-ssd-512gb-m-2-nvme-fonte-600w-80-plus-pgbp-1012lud","g":"RTX 3060","v":12,"b":"nv","cpu":"Ryzen 7 5700X","r":"16GB DDR4","s":"512GB","f":"600W","k":0},{"n":"PC Gamer Ludic By Bluepc - Amd Ryzen 5 5500, Radeon Rx 7600 8GB, 32gb Ram, SSD 1TB M.2 Nvme, 600w 80 Plus, Preto, 7 Fans RGB - Pgbp-lu2137","c":"KaBuM!","p":6519,"o":7243.33,"u":"https://www.kabum.com.br/produto/1012282/pc-gamer-ludic-by-bluepc-amd-ryzen-5-5500-radeon-rx-7600-8gb-32gb-ram-ssd-1tb-m-2-nvme-600w-80-plus-preto-7-fans-rgb-pgbp-lu2137","g":"RX 7600","v":8,"b":"amd","cpu":"Ryzen 5 5500","r":"32GB DDR4","s":"1TB","f":"600W","k":0},{"n":"PC Gamer LUDIC by BluePC - AMD Ryzen 5 5500, Geforce RTX 4060 8GB, 16GB RAM, SSD 512GB M.2 NVMe, Fonte 600W 80 Plus - PGBP-1207LUD","c":"Amazon","p":6599,"o":6946.32,"u":"https://www.amazon.com.br/dp/B0DYK8WPM4","g":"RTX 4060","v":8,"b":"nv","cpu":"Ryzen 5 5500","r":"16GB DDR4","s":"512GB","f":"600W","k":0},{"n":"PC Gamer Completo Ryzen 5 5500, RX 7600, 16GB DDR4, SSD 500GB NVMe, 600W 80 Plus, Windows 11 Pro, PCITAL04-E","c":"Amazon","p":6605.64,"o":null,"u":"https://www.amazon.com.br/dp/B0BM5BK4M1","g":"RX 7600","v":8,"b":"amd","cpu":"Ryzen 5 5500","r":"16GB DDR4","s":"500GB","f":"600W","k":1},{"n":"PC Gamer Ludic By Bluepc - Intel Core i5 12400f, Geforce RTX 5060 8GB, 16gb Ddr4, SSD 512gb M.2 Nvme, Water Cooler, Fonte 600w 80 Plus - Pgbp-1179lud","c":"KaBuM!","p":6669,"o":7410,"u":"https://www.kabum.com.br/produto/706084/pc-gamer-ludic-by-bluepc-intel-core-i5-12400f-geforce-rtx-4060-8gb-16gb-ram-ssd-512gb-watercooler-fonte-600w-80-plus-pgbp-1179lud","g":"RTX 5060","v":8,"b":"nv","cpu":"i5 12400F","r":"16GB DDR4","s":"512GB","f":"600W","k":0},{"n":"PC Gamer Skill Aquarium, Intel Core I5 10400F, 16GB, Geforce RTX 4060 8GB, SSD 512GB M.2, Fonte 600W 80 Plus, Preto SKA038","c":"Amazon","p":6686.99,"o":7429.99,"u":"https://www.amazon.com.br/dp/B0DP83B7G3","g":"RTX 4060","v":8,"b":"nv","cpu":"i5 10400F","r":"16GB DDR4","s":"512GB","f":"600W","k":0},{"n":"PC Gamer Skill Aquarium, Intel Core I5 10400F, 16GB, Geforce RTX 4060 8GB, SSD 512GB M.2, Fonte 600W 80 Plus, Preto SKA038","c":"KaBuM!","p":6686.99,"o":7429.99,"u":"https://www.kabum.com.br/produto/661621/pc-gamer-skill-aquarium-intel-core-i5-10400f-16gb-3200mhz-geforce-rtx-4060-8gb-ssd-512gb-m-2-fonte-600w-80-plus-preto-ska038","g":"RTX 4060","v":8,"b":"nv","cpu":"i5 10400F","r":"16GB DDR4","s":"512GB","f":"600W","k":0},{"n":"PC GAMER RYZEN 5 5500 A520M 2X 8GB 3200MHZ SSD 240GB BIVOLT RTX 5060 8GB - MONITOR 24''","c":"Amazon","p":6707,"o":7060,"u":"https://www.amazon.com.br/dp/B0GRP8FVM9","g":"RTX 5060","v":8,"b":"nv","cpu":"Ryzen 5 5500","r":"16GB DDR4","s":"240GB","f":"—","k":1},{"n":"PC GAMER BRANCO AMD RYZEN 5 5600XT B550M 2X 8GB 3200MHZ SSD 480GB RTX 5060 8GB","c":"Amazon","p":6734.55,"o":7089,"u":"https://www.amazon.com.br/dp/B0G1HY26HC","g":"RTX 5060","v":8,"b":"nv","cpu":"Ryzen 5 5600XT","r":"16GB DDR4","s":"480GB","f":"—","k":0},{"n":"PC Gamer Aquário Skill AMD Ryzen 5 5500, RTX 5060 8GB, 16GB DDR4, SSD 1TB, Watercooler Apex Preto SW003","c":"Amazon","p":6740.99,"o":7489.99,"u":"https://www.amazon.com.br/dp/B0HM9266W3","g":"RTX 5060","v":8,"b":"nv","cpu":"Ryzen 5 5500","r":"16GB DDR4","s":"1TB","f":"—","k":0},{"n":"PC GAMER HERTZ® RYZEN 5 5500 RTX 5060 8GB 32GB NVME 500GB GABINETE GAMER","c":"Amazon","p":6884.65,"o":7247,"u":"https://www.amazon.com.br/dp/B0H6KG1PK4","g":"RTX 5060","v":8,"b":"nv","cpu":"Ryzen 5 5500","r":"32GB DDR4","s":"500GB","f":"—","k":0},{"n":"PC Gamer LUDIC by BluePC - AMD Ryzen 5 5500, Geforce RTX 3060 12GB, 16GB RAM, SSD 1TB M.2 NVMe, Watercooler, Fonte 600W 80 Plus - PGBP-1059LUD","c":"Amazon","p":7089,"o":7462.11,"u":"https://www.amazon.com.br/dp/B0DYK8632F","g":"RTX 3060","v":12,"b":"nv","cpu":"Ryzen 5 5500","r":"16GB DDR4","s":"1TB","f":"600W","k":0},{"n":"PC Gamer Aquário Intel Core I5 12400F, Rx 7600, 16gb Ram, Nvme 1TB, W11 - Kalango Games","c":"KaBuM!","p":7139.15,"o":null,"u":"https://www.kabum.com.br/produto/705632/pc-gamer-aquario-intel-core-i5-12400f-rx-6600-16gb-ram-nvme-1tb-w10","g":"RX 7600","v":8,"b":"amd","cpu":"i5 12400F","r":"16GB DDR4","s":"1TB","f":"—","k":0},{"n":"PC GAMER TITAN AMD RYZEN 7 5700X/32GB RAM/NVME 1TB/NVIDIA RTX 5050 8GB/GABINETE 3 FANS RGB","c":"Amazon","p":7219.05,"o":7599,"u":"https://www.amazon.com.br/dp/B0F1KVL244","g":"RTX 5050","v":8,"b":"nv","cpu":"Ryzen 7 5700X","r":"32GB DDR4","s":"1TB","f":"—","k":0},{"n":"PC Computador Gamer Completo I5 10 Ger, 16GB, SSD 500GB, RTX 2060 12GB, Monitor 24 Polegadas","c":"KaBuM!","p":7225,"o":8500,"u":"https://www.kabum.com.br/produto/452617/pc-computador-gamer-completo-i5-10-ger-16gb-ssd-500gb-rtx-2060-12gb-monitor-24-polegadas","g":"RTX 2060","v":12,"b":"nv","cpu":"i5","r":"16GB DDR4","s":"500GB","f":"—","k":1},{"n":"PC Computador Gamer Ryzen 5 5500 | RTX 5060 Ti 8GB | 32gb Ddr4 | SSD 1TB Nvme | Branco Aquario - Setup Avançado","c":"KaBuM!","p":8298.99,"o":9221.1,"u":"https://www.kabum.com.br/produto/877904/pc-computador-gamer-ryzen-5-5500-rtx-5060-ti-8gb-32gb-ddr4-ssd-1tb-nvme-branco-aquario-setup-avancado","g":"RTX 5060 Ti","v":8,"b":"nv","cpu":"Ryzen 5 5500","r":"32GB DDR4","s":"1TB","f":"—","k":0},{"n":"PC Gamer Aquario Branco Intel i5 12400F | RTX 5060 Ti 8GB | 32GB DDR4 | SSD NVMe 1TB | Water Cooler | Win11 Pro","c":"Amazon","p":8359.05,"o":8799,"u":"https://www.amazon.com.br/dp/B0FTBCXBKW","g":"RTX 5060 Ti","v":8,"b":"nv","cpu":"i5 12400F","r":"32GB DDR4","s":"1TB","f":"—","k":0},{"n":"PC Gamer Aura By Bluepc - Amd Ryzen 5 5600x, B550, Geforce RTX 5060 Ti 16gb, 16gb Ddr4, SSD M.2 PCie 512gb, Fonte 650w 80 Plus - Pgbp-aur104","c":"KaBuM!","p":8589,"o":9543.33,"u":"https://www.kabum.com.br/produto/908511/pc-gamer-aura-by-bluepc-amd-ryzen-5-5600x-b550-geforce-rtx-5060-ti-16gb-16gb-ddr4-ssd-m-2-pcie-512gb-fonte-650w-80-plus-pgbp-aur104","g":"RTX 5060 Ti","v":16,"b":"nv","cpu":"Ryzen 5 5600X","r":"16GB DDR4","s":"512GB","f":"650W","k":0},{"n":"PC Gamer Black Intel i5 12400 | RTX 5060 Ti Gddr7 | 32gb Ddr4 | SSD 1TB Nvme | Gabinete Aquario 5 Fans - Setup Gamer Pronto Para Tudo","c":"KaBuM!","p":8949,"o":9943.33,"u":"https://www.kabum.com.br/produto/877499/pc-gamer-black-intel-i5-12400-rtx-5060-ti-gddr7-32gb-ddr4-ssd-1tb-nvme-gabinete-aquario-5-fans-setup-gamer-pronto-para-tudo","g":"RTX 5060 Ti","v":8,"b":"nv","cpu":"i5 12400","r":"32GB DDR4","s":"1TB","f":"—","k":0},{"n":"PC Gamer Ryzen 5 5600x, RTX 4060 Ti, 16gb RGB Ddr4, SSD Nvme 500gb, 700w 80 Plus, Full Black, Tecnoart01-e","c":"KaBuM!","p":9081.67,"o":null,"u":"https://www.kabum.com.br/produto/684023/pc-gamer-ryzen-5-5600x-rtx-4060-ti-16gb-rgb-ddr4-ssd-nvme-500gb-700w-80-plus-full-black-tecnoart01-e","g":"RTX 4060 Ti","v":8,"b":"nv","cpu":"Ryzen 5 5600X","r":"16GB DDR4","s":"500GB","f":"700W","k":0},{"n":"PC Gamer Intel Core i5 12400f, RTX 5060 Ti, 16gb, SSD Nvme 1TB - Kalango Games","c":"KaBuM!","p":9119.2,"o":null,"u":"https://www.kabum.com.br/produto/710649/pc-gamer-intel-core-i5-12400f-rtx-5060-ti-16gb-ssd-nvme-1tb","g":"RTX 5060 Ti","v":8,"b":"nv","cpu":"i5 12400F","r":"16GB DDR4","s":"1TB","f":"—","k":0},{"n":"PC Gamer Pulse By Bluepc - Amd Ryzen 7 5700x, B450, Geforce RTX 5060 Ti 16gb, 16gb Ddr4, SSD M.2 PCie 512gb, Fonte 650w 80 Plus - Pgbp-pul136","c":"KaBuM!","p":9129,"o":10143.33,"u":"https://www.kabum.com.br/produto/916578/pc-gamer-multi-by-bluepc-amd-ryzen-7-5700x-b450-geforce-rtx-5060-ti-16gb-16gb-ddr4-ssd-m-2-pcie-512gb-fonte-650w-80-plus-pgbp-pul136","g":"RTX 5060 Ti","v":16,"b":"nv","cpu":"Ryzen 7 5700X","r":"16GB DDR4","s":"512GB","f":"650W","k":0},{"n":"PC Gamer Ludic By Bluepc - Amd Ryzen 5 5500, Geforce RTX 5060 Ti 16gb, 32gb Ram, SSD 1TB M.2 Nvme, 600w 80 Plus, Preto, 7 Fans RGB - Pgbp-lu2135","c":"KaBuM!","p":9279,"o":10310,"u":"https://www.kabum.com.br/produto/1021363/pc-gamer-ludic-by-bluepc-amd-ryzen-5-5500-geforce-rtx-5060-ti-16gb-32gb-ram-ssd-1tb-m-2-nvme-600w-80-plus-preto-7-fans-rgb-pgbp-lu2135","g":"RTX 5060 Ti","v":16,"b":"nv","cpu":"Ryzen 5 5500","r":"32GB DDR4","s":"1TB","f":"600W","k":0},{"n":"PC Gamer PULSE By Bluepc - Amd Ryzen 5 5600x, B450, Geforce RTX 5060 Ti 16gb, 32gb Ddr4, SSD M.2 PCie 1TB, Fonte 650w 80 Plus - Pgbp-pul115","c":"KaBuM!","p":9339,"o":10376.67,"u":"https://www.kabum.com.br/produto/913497/pc-gamer-multi-by-bluepc-amd-ryzen-5-5600x-b450-geforce-rtx-5060-ti-16gb-32gb-ddr4-ssd-m-2-pcie-1tb-fonte-650w-80-plus-pgbp-pul115","g":"RTX 5060 Ti","v":16,"b":"nv","cpu":"Ryzen 5 5600X","r":"32GB DDR4","s":"1TB","f":"650W","k":0},{"n":"PC Gamer Premium Ryzen 7 5700x | RTX 5060 Ti 8GB | 32gb Ddr4 | SSD Nvme 1TB | Water Cooler Branco | WINDOWS 11 Pro – Alta Performance","c":"KaBuM!","p":9399,"o":10443.33,"u":"https://www.kabum.com.br/produto/947523/pc-gamer-premium-ryzen-7-5700x-rtx-5060-ti-8gb-32gb-ddr4-ssd-nvme-1tb-water-cooler-branco-windows-11-pro-alta-performance","g":"RTX 5060 Ti","v":8,"b":"nv","cpu":"Ryzen 7 5700X","r":"32GB DDR4","s":"1TB","f":"—","k":0},{"n":"PC Gamer Aquario Branco Intel i5 12400f | RTX 5060 Ti 8GB | 32gb Ddr4 | SSD Nvme 1TB | Water Cooler | Win11 Pro","c":"KaBuM!","p":9419,"o":10465.56,"u":"https://www.kabum.com.br/produto/941061/pc-gamer-aquario-branco-intel-i5-12400f-rtx-5060-ti-8gb-32gb-ddr4-ssd-nvme-1tb-water-cooler-win11-pro","g":"RTX 5060 Ti","v":8,"b":"nv","cpu":"i5 12400F","r":"32GB DDR4","s":"1TB","f":"—","k":0},{"n":"Pc Gamer BluePC Intel Core I5 12400f (12ª Geração) 8gb Ddr4 Rtx 4070 12gb Ssd 240gb - Fonte 650w","c":"KaBuM!","p":9539,"o":10598.89,"u":"https://www.kabum.com.br/produto/587185/pc-gamer-bluepc-intel-core-i5-12400f-12-geracao-8gb-ddr4-rtx-4070-12gb-ssd-240gb-fonte-650w","g":"RTX 4070","v":12,"b":"nv","cpu":"i5 12400F","r":"8GB DDR4","s":"240GB","f":"650W","k":0},{"n":"Pc Gamer BluePC Intel Core I5 12400f (12ª Geração) 8gb Ddr4 Rtx 4070 12gb Ssd 480gb - Fonte 650w","c":"KaBuM!","p":9779,"o":10865.56,"u":"https://www.kabum.com.br/produto/587186/pc-gamer-bluepc-intel-core-i5-12400f-12-geracao-8gb-ddr4-rtx-4070-12gb-ssd-480gb-fonte-650w","g":"RTX 4070","v":12,"b":"nv","cpu":"i5 12400F","r":"8GB DDR4","s":"480GB","f":"650W","k":0},{"n":"PC Gamer Aquario Branco Ryzen 7 5700x | Rx 9060 Xt 16gb | 32gb Ram | SSD Nvme 1TB | Water Cooler 240mm | Win11 Pro","c":"KaBuM!","p":9897.3,"o":10997,"u":"https://www.kabum.com.br/produto/1065098/pc-gamer-aquario-branco-ryzen-7-5700x-rx-9060-xt-16gb-32gb-ram-ssd-nvme-1tb-water-cooler-240mm-win11-pro","g":"RX 9060 XT","v":16,"b":"amd","cpu":"Ryzen 7 5700X","r":"32GB DDR4","s":"1TB","f":"—","k":0},{"n":"Pc Gamer BluePC Intel Core I5 12400f (12ª Geração) 16gb Ddr4 Rtx 4070 12gb Ssd 240gb - Fonte 650w","c":"KaBuM!","p":9919,"o":11021.11,"u":"https://www.kabum.com.br/produto/587183/pc-gamer-bluepc-intel-core-i5-12400f-12-geracao-16gb-ddr4-rtx-4070-12gb-ssd-240gb-fonte-650w","g":"RTX 4070","v":12,"b":"nv","cpu":"i5 12400F","r":"16GB DDR4","s":"240GB","f":"650W","k":0},{"n":"Pc Gamer BluePC Intel Core I5 12400f (12ª Geração) 8gb Ddr4 Rtx 4070 12gb Ssd 960gb - Fonte 650w","c":"KaBuM!","p":10149,"o":11276.67,"u":"https://www.kabum.com.br/produto/587177/pc-gamer-bluepc-intel-core-i5-12400f-12-geracao-8gb-ddr4-rtx-4070-12gb-ssd-960gb-fonte-650w","g":"RTX 4070","v":12,"b":"nv","cpu":"i5 12400F","r":"8GB DDR4","s":"960GB","f":"650W","k":0},{"n":"Pc Gamer BluePC Intel Core I5 12400f (12ª Geração) 16gb Ddr4 Rtx 4070 12gb Ssd 480gb - Fonte 650w","c":"KaBuM!","p":10159,"o":11287.78,"u":"https://www.kabum.com.br/produto/587176/pc-gamer-bluepc-intel-core-i5-12400f-12-geracao-16gb-ddr4-rtx-4070-12gb-ssd-480gb-fonte-650w","g":"RTX 4070","v":12,"b":"nv","cpu":"i5 12400F","r":"16GB DDR4","s":"480GB","f":"650W","k":0},{"n":"Pc Gamer BluePC Intel Core I5 12400f (12ª Geração) 16gb Ddr4 Rtx 4070 12gb Ssd 960gb - Fonte 650w","c":"KaBuM!","p":10539,"o":11710,"u":"https://www.kabum.com.br/produto/587170/pc-gamer-bluepc-intel-core-i5-12400f-12-geracao-16gb-ddr4-rtx-4070-12gb-ssd-960gb-fonte-650w","g":"RTX 4070","v":12,"b":"nv","cpu":"i5 12400F","r":"16GB DDR4","s":"960GB","f":"650W","k":0},{"n":"PC Gamer Intel Core i7 12700f, RTX 4060 Ti, 16gb Ddr4, SSD Nvme 500gb, 600w 80 Plus, PCryv13-e","c":"KaBuM!","p":10598.28,"o":null,"u":"https://www.kabum.com.br/produto/697231/pc-gamer-intel-core-i7-12700f-rtx-4060-ti-16gb-ddr4-ssd-nvme-500gb-600w-80-plus-pcryv13-e","g":"RTX 4060 Ti","v":8,"b":"nv","cpu":"i7 12700F","r":"16GB DDR4","s":"500GB","f":"600W","k":0},{"n":"PC Gamer Ludic By Bluepc - Intel Core i5 12400f, Geforce RTX 5070 12gb, 16gb Ddr4, SSD 512gb M.2 Nvme, Water Cooler, Fonte 750w 80 Plus -pgbp-1181lud","c":"KaBuM!","p":10619,"o":11798.89,"u":"https://www.kabum.com.br/produto/706071/pc-gamer-ludic-by-bluepc-intel-core-i5-12400f-geforce-rtx-5070-12gb-16gb-ddr4-ssd-512gb-m-2-nvme-water-cooler-fonte-750w-80-plus-pgbp-1181lud","g":"RTX 5070","v":12,"b":"nv","cpu":"i5 12400F","r":"16GB DDR4","s":"512GB","f":"750W","k":0},{"n":"PC Gamer Ryzen 5 5600x, RTX 4060 Ti, 16gb Ddr4 RGB , SSD Nvme 1TB, 700w 80 Plus, PCryv01-e","c":"KaBuM!","p":10638.43,"o":null,"u":"https://www.kabum.com.br/produto/697239/pc-gamer-ryzen-5-5600x-rtx-4060-ti-16gb-ddr4-rgb-ssd-nvme-1tb-700w-80-plus-pcryv01-e","g":"RTX 4060 Ti","v":8,"b":"nv","cpu":"Ryzen 5 5600X","r":"16GB DDR4","s":"1TB","f":"700W","k":0},{"n":"PC Gamer Ludic By Bluepc - Amd Ryzen 7 5700x, Geforce RTX 4070 12gb, 16gb Ram, SSD 512gb M.2 Nvme, Fonte 750w 80 Plus - Pgbp-1015lud","c":"KaBuM!","p":10659,"o":11843.33,"u":"https://www.kabum.com.br/produto/706022/pc-gamer-ludic-by-bluepc-amd-ryzen-7-5700x-geforce-rtx-4070-12gb-16gb-ram-ssd-512gb-m-2-nvme-fonte-750w-80-plus-pgbp-1015lud","g":"RTX 4070","v":12,"b":"nv","cpu":"Ryzen 7 5700X","r":"16GB DDR4","s":"512GB","f":"750W","k":0},{"n":"PC Gamer Ludic By Bluepc - Intel Core i5 12400f, Geforce RTX 5070 12gb Gddr7, 16gb Ddr4, SSD 1TB M.2 Nvme, Fonte 750w 80 Plus - Pgbp-1240lud","c":"KaBuM!","p":10709,"o":11898.89,"u":"https://www.kabum.com.br/produto/712857/pc-gamer-ludic-by-bluepc-intel-core-i5-12400f-geforce-rtx-5070-12gb-gddr7-16gb-ddr4-ssd-1tb-m-2-nvme-fonte-750w-80-plus-pgbp-1240lud","g":"RTX 5070","v":12,"b":"nv","cpu":"i5 12400F","r":"16GB DDR4","s":"1TB","f":"750W","k":0},{"n":"PC Gamer Pulse By Bluepc - Amd Ryzen 7 5700x, B450, Geforce RTX 5070 12gb, 16gb Ddr4, SSD M.2 PCie 512gb, Fonte 750w 80 Plus - Pgbp-pul140","c":"KaBuM!","p":10879,"o":12087.78,"u":"https://www.kabum.com.br/produto/916597/pc-gamer-multi-by-bluepc-amd-ryzen-7-5700x-b450-geforce-rtx-5070-12gb-16gb-ddr4-ssd-m-2-pcie-512gb-fonte-750w-80-plus-pgbp-pul140","g":"RTX 5070","v":12,"b":"nv","cpu":"Ryzen 7 5700X","r":"16GB DDR4","s":"512GB","f":"750W","k":0},{"n":"Super Pc Gamer Core I7 11°, Rtx 3060 Ti, 32gb Ddr4, 2terabyte SSD, Monitor Curvo 240hz, Kit Mecânico E Muito Mais","c":"KaBuM!","p":10980,"o":null,"u":"https://www.kabum.com.br/produto/577080/super-pc-gamer-core-i7-11-rtx-3060-ti-32gb-ddr4-2terabyte-ssd-monitor-curvo-240hz-kit-mecanico-e-muito-mais","g":"RTX 3060 Ti","v":8,"b":"nv","cpu":"i7","r":"32GB DDR4","s":"2TB","f":"—","k":1},{"n":"PC Gamer Ludic By Bluepc - Amd Ryzen 7 5700x, Geforce RTX 4070 12gb, 16gb Ram, SSD 1TB M.2 Nvme, Fonte 750w 80 Plus - Pgbp-1022lud","c":"KaBuM!","p":11039,"o":12265.56,"u":"https://www.kabum.com.br/produto/706154/pc-gamer-ludic-by-bluepc-amd-ryzen-7-5700x-geforce-rtx-4070-12gb-16gb-ram-ssd-1tb-m-2-nvme-fonte-750w-80-plus-pgbp-1022lud","g":"RTX 4070","v":12,"b":"nv","cpu":"Ryzen 7 5700X","r":"16GB DDR4","s":"1TB","f":"750W","k":0},{"n":"PC Gamer Pulse By Bluepc - Amd Ryzen 7 5700x, B450, Geforce RTX 5070 12gb, 32gb Ddr4, SSD M.2 PCie 512gb, Fonte 750w 80 Plus - Pgbp-pul141","c":"KaBuM!","p":11539,"o":12821.11,"u":"https://www.kabum.com.br/produto/916593/pc-gamer-multi-by-bluepc-amd-ryzen-7-5700x-b450-geforce-rtx-5070-12gb-32gb-ddr4-ssd-m-2-pcie-512gb-fonte-750w-80-plus-pgbp-pul141","g":"RTX 5070","v":12,"b":"nv","cpu":"Ryzen 7 5700X","r":"32GB DDR4","s":"512GB","f":"750W","k":0},{"n":"PC Gamer Aura By Bluepc - Amd Ryzen 7 5700x, B550, Geforce RTX 5070 12gb, 16gb Ddr4, SSD M.2 PCie 1TB, Fonte 750w 80 Plus - Pgbp-aur126","c":"KaBuM!","p":11539,"o":12821.11,"u":"https://www.kabum.com.br/produto/908738/pc-gamer-aura-by-bluepc-amd-ryzen-7-5700x-b550-geforce-rtx-5070-12gb-16gb-ddr4-ssd-m-2-pcie-1tb-fonte-750w-80-plus-pgbp-aur126","g":"RTX 5070","v":12,"b":"nv","cpu":"Ryzen 7 5700X","r":"16GB DDR4","s":"1TB","f":"750W","k":0},{"n":"PC Gamer Pulse By Bluepc - Amd Ryzen 7 5700x, B450, Geforce RTX 5070 12gb, 32gb Ddr4, SSD M.2 PCie 1TB, Fonte 750w 80 Plus - Pgbp-pul143","c":"KaBuM!","p":11909,"o":13232.22,"u":"https://www.kabum.com.br/produto/916588/pc-gamer-multi-by-bluepc-amd-ryzen-7-5700x-b450-geforce-rtx-5070-12gb-32gb-ddr4-ssd-m-2-pcie-1tb-fonte-750w-80-plus-pgbp-pul143","g":"RTX 5070","v":12,"b":"nv","cpu":"Ryzen 7 5700X","r":"32GB DDR4","s":"1TB","f":"750W","k":0},{"n":"PC Gamer Ludic By Bluepc - Amd Ryzen 7 5700x, Geforce RTX 4070 Ti 16gb, 16gb Ram, SSD 512gb M.2 Nvme, Fonte 750w 80 Plus - Pgbp-1016lud","c":"KaBuM!","p":13689,"o":15210,"u":"https://www.kabum.com.br/produto/706038/pc-gamer-ludic-by-bluepc-amd-ryzen-7-5700x-geforce-rtx-4070-ti-16gb-16gb-ram-ssd-512gb-m-2-nvme-fonte-750w-80-plus-pgbp-1016lud","g":"RTX 4070 Ti","v":16,"b":"nv","cpu":"Ryzen 7 5700X","r":"16GB DDR4","s":"512GB","f":"750W","k":0},{"n":"PC Gamer Pulse By Bluepc - Amd Ryzen 7 5700x, B450, Geforce RTX 5070 Ti 16gb, 16gb Ddr4, SSD M.2 PCie 1TB, Fonte 750w 80 Plus - Pgbp-pul146","c":"KaBuM!","p":13799,"o":15332.22,"u":"https://www.kabum.com.br/produto/916587/pc-gamer-multi-by-bluepc-amd-ryzen-7-5700x-b450-geforce-rtx-5070-ti-16gb-16gb-ddr4-ssd-m-2-pcie-1tb-fonte-750w-80-plus-pgbp-pul146","g":"RTX 5070 Ti","v":16,"b":"nv","cpu":"Ryzen 7 5700X","r":"16GB DDR4","s":"1TB","f":"750W","k":0},{"n":"PC Gamer Pulse By Bluepc - Amd Ryzen 7 5700x, B450, Geforce RTX 5070 Ti 16gb, 16gb Ddr4, SSD M.2 PCie 512gb, Fonte 750w 80 Plus - Pgbp-pul144","c":"KaBuM!","p":13909,"o":15454.44,"u":"https://www.kabum.com.br/produto/916600/pc-gamer-multi-by-bluepc-amd-ryzen-7-5700x-b450-geforce-rtx-5070-ti-16gb-16gb-ddr4-ssd-m-2-pcie-512gb-fonte-750w-80-plus-pgbp-pul144","g":"RTX 5070 Ti","v":16,"b":"nv","cpu":"Ryzen 7 5700X","r":"16GB DDR4","s":"512GB","f":"750W","k":0},{"n":"PC Gamer Ludic By Bluepc - Amd Ryzen 7 5700x, Geforce RTX 4070 Ti 16gb, 16gb Ram, SSD 1TB M.2 Nvme, Fonte 750w 80 Plus - Pgbp-1023lud","c":"KaBuM!","p":14069,"o":15632.22,"u":"https://www.kabum.com.br/produto/706132/pc-gamer-ludic-by-bluepc-amd-ryzen-7-5700x-geforce-rtx-4070-ti-16gb-16gb-ram-ssd-1tb-m-2-nvme-fonte-750w-80-plus-pgbp-1023lud","g":"RTX 4070 Ti","v":16,"b":"nv","cpu":"Ryzen 7 5700X","r":"16GB DDR4","s":"1TB","f":"750W","k":0},{"n":"PC Gamer Completo Ryzen 7 5800x, RTX 4060 Ti, 64gb RGB Ddr4, SSD Nvme 1TB, 700w 80 Plus, Full Black, Unr12-e","c":"KaBuM!","p":14253.83,"o":null,"u":"https://www.kabum.com.br/produto/705095/pc-gamer-completo-ryzen-7-5800x-rtx-4060-ti-64gb-rgb-ddr4-ssd-nvme-1tb-700w-80-plus-full-black-unr12-e","g":"RTX 4060 Ti","v":8,"b":"nv","cpu":"Ryzen 7 5800X","r":"64GB DDR4","s":"1TB","f":"700W","k":1},{"n":"PC Gamer Pulse By Bluepc - Amd Ryzen 7 5700x, B450, Geforce RTX 5070 Ti 16gb, 32gb Ddr4, SSD M.2 PCie 512gb, Fonte 750w 80 Plus - Pgbp-pul145","c":"KaBuM!","p":14569,"o":16187.78,"u":"https://www.kabum.com.br/produto/916583/pc-gamer-multi-by-bluepc-amd-ryzen-7-5700x-b450-geforce-rtx-5070-ti-16gb-32gb-ddr4-ssd-m-2-pcie-512gb-fonte-750w-80-plus-pgbp-pul145","g":"RTX 5070 Ti","v":16,"b":"nv","cpu":"Ryzen 7 5700X","r":"32GB DDR4","s":"512GB","f":"750W","k":0},{"n":"PC Gamer Pulse By Bluepc - Amd Ryzen 7 5700x, B450, Geforce RTX 5070 Ti 16gb, 32gb Ddr4, SSD M.2 PCie 1TB, Fonte 750w 80 Plus - Pgbp-pul147","c":"KaBuM!","p":14939,"o":16598.89,"u":"https://www.kabum.com.br/produto/916595/pc-gamer-multi-by-bluepc-amd-ryzen-7-5700x-b450-geforce-rtx-5070-ti-16gb-32gb-ddr4-ssd-m-2-pcie-1tb-fonte-750w-80-plus-pgbp-pul147","g":"RTX 5070 Ti","v":16,"b":"nv","cpu":"Ryzen 7 5700X","r":"32GB DDR4","s":"1TB","f":"750W","k":0},{"n":"PC GAMER, I9-9900KF, GEFORCE RTX 3070 8GB, 32GB DDR4, HD 1TB, SSD 480GB NVME 600W, RGB","c":"Amazon","p":22499.66,"o":null,"u":"https://www.amazon.com.br/dp/B08J9FDWPR","g":"RTX 3070","v":8,"b":"nv","cpu":"i9 9900KF","r":"32GB DDR4","s":"480GB","f":"600W","k":0}];
+
+const FPS_FACTOR = { p1080: 2.037 };
+const idxMap = {
+  "GTX 750": 8, "GTX 750 Ti": 9.5, "GTX 1050 Ti": 13, "GTX 1060": 17, "GTX 1650": 16,
+  "GTX 1660": 20, "GTX 1660 Super": 22, "GTX 1660 Ti": 23,
+  "RTX 2060": 24, "RTX 2060 Super": 27, "RTX 3050": 21.9, "RTX 3060": 30.2,
+  "RTX 3060 Ti": 36, "RTX 3070": 41, "RTX 4060": 35.1, "RTX 4060 Ti": 42,
+  "RTX 4070": 52, "RTX 4070 Super": 57, "RTX 4070 Ti": 61,
+  "RTX 5050": 34, "RTX 5060": 43.4, "RTX 5060 Ti": 49.3, "RTX 5070": 65.1,
+  "RTX 5070 Ti": 76.2, "RTX 5080": 81.9,
+  "RX 550": 8, "RX 560": 11, "RX 570": 13, "RX 580": 16, "RX 6500 XT": 16,
+  "RX 6600": 25.5, "RX 6600 XT": 29, "RX 7600": 34.3, "RX 7600 XT": 40,
+  "RX 7700 XT": 53, "RX 9050": 25, "RX 9060 XT": 45.7, "RX 9070": 69.1, "RX 9070 XT": 76.9
+};
+
+function idxFor(p) {
+  let idx = idxMap[p.g];
+  if (idx == null) return null;
+  if (p.g === "RTX 3050" && p.v === 6) idx = 19;
+  if (p.g === "RTX 5060 Ti" && p.v === 16) idx = 51.6;
+  if (p.g === "RX 9060 XT" && p.v === 16) idx = 48.2;
+  return idx;
+}
+const focoFor = idx => idx >= 69 ? "4k" : idx >= 50 ? "1440p" : "1080p";
+const focoTxt = f => f === "4k" ? "Ideal 4K" : f === "1440p" ? "Ideal 1440p" : "Ideal 1080p";
+const brl = v => "R$ " + v.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const esc = v => String(v == null ? "" : v).replace(/[&<>"']/g, c => ({
+  "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+}[c]));
+
+const itens = PCS.map((p, i) => {
+  const idx = idxFor(p);
+  const fps = idx != null ? idx * FPS_FACTOR.p1080 : null;
+  return {
+    ...p, id: i, idx, fps,
+    vpc: fps ? fps / (p.p / 1000) : null,
+    foco: idx != null ? focoFor(idx) : "1080p",
+    cpuBrand: /ryzen|amd/i.test(p.cpu) ? "amd" : /i[3579]|ultra|intel/i.test(p.cpu) ? "intel" : "outro"
+  };
+});
+
+/* ==================== FILTROS ==================== */
+let st = { cpu: "all", gpu: "all" };
+const $ = id => document.getElementById(id);
+
+document.querySelectorAll("#seg-cpu2 button").forEach(b => b.onclick = () => {
+  document.querySelectorAll("#seg-cpu2 button").forEach(x => x.classList.remove("on"));
+  b.classList.add("on"); st.cpu = b.dataset.cpu2; render();
+});
+document.querySelectorAll("#seg-gpu2 button").forEach(b => b.onclick = () => {
+  document.querySelectorAll("#seg-gpu2 button").forEach(x => x.classList.remove("on"));
+  b.classList.add("on"); st.gpu = b.dataset.gpu2; render();
+});
+["f-preco", "f-foco", "f-loja", "f-ordem"].forEach(id => $(id).onchange = render);
+$("f-busca").oninput = render;
+
+const ORDEM_LBL = { menor: "menor preço", maior: "maior preço", perf: "melhor desempenho", vpc: "melhor custo-benefício" };
+
+function render() {
+  const [min, max] = $("f-preco").value === "all" ? [0, 1e9] : $("f-preco").value.split("-").map(Number);
+  const q = $("f-busca").value.trim().toLowerCase();
+
+  let list = itens.filter(p =>
+    p.p >= min && p.p <= max &&
+    (st.cpu === "all" || p.cpuBrand === st.cpu) &&
+    (st.gpu === "all" || p.b === st.gpu) &&
+    ($("f-foco").value === "all" || p.foco === $("f-foco").value) &&
+    ($("f-loja").value === "all" || p.c === $("f-loja").value) &&
+    (!q || (p.n + " " + p.g + " " + p.cpu + " " + p.r).toLowerCase().includes(q))
+  );
+
+  const ord = $("f-ordem").value;
+  list.sort((a, b) => {
+    if (ord === "menor") return a.p - b.p;
+    if (ord === "maior") return b.p - a.p;
+    if (ord === "perf") return (b.idx || 0) - (a.idx || 0);
+    return (b.vpc || 0) - (a.vpc || 0);
+  });
+
+  $("ordem-lbl").textContent = ORDEM_LBL[ord];
+  $("count-pcs").textContent = list.length;
+
+  const grid = $("pc-grid"), empty = $("empty-pcs");
+  if (!list.length) { grid.innerHTML = ""; empty.classList.add("show"); return; }
+  empty.classList.remove("show");
+
+  grid.innerHTML = list.map(p => {
+    const gpuClass = p.b === "nv" ? "gpu-nv" : "gpu-amd";
+    const perf = p.idx != null
+      ? Math.round(p.fps) + " fps (1080p est.) · " + p.idx.toFixed(1) + " pts · " + p.vpc.toFixed(1) + " fps por R$ 1.000"
+      : "sem índice de desempenho";
+    return '<article class="pc-card">' +
+      '<div class="pc-head">' +
+        '<div class="pc-tag-row">' +
+          '<span class="pc-tag ' + gpuClass + '">' + esc(p.g) + (p.v ? " " + p.v + "GB" : "") + '</span>' +
+          '<span class="pc-tag res">' + focoTxt(p.foco) + '</span>' +
+          '<span class="pc-tag store">' + esc(p.c) + '</span>' +
+          (p.k ? '<span class="pc-tag">Completo</span>' : '') +
+        '</div>' +
+        '<h3 class="pc-title" title="' + esc(p.n) + '">' + esc(p.n) + '</h3>' +
+      '</div>' +
+      '<div class="pc-specs">' +
+        '<div class="spec">CPU: <b>' + esc(p.cpu) + '</b></div>' +
+        '<div class="spec">RAM: <b>' + esc(p.r) + '</b></div>' +
+        '<div class="spec">Disco: <b>' + esc(p.s) + '</b></div>' +
+        '<div class="spec">Fonte: <b>' + esc(p.f) + '</b></div>' +
+        '<div class="spec wide">Desempenho: <b>' + perf + '</b></div>' +
+      '</div>' +
+      '<div class="pc-foot">' +
+        '<div class="price-block">' +
+          '<div class="preco">' + brl(p.p) + '</div>' +
+          (p.o ? '<div class="de">' + brl(p.o) + '</div>' : '') +
+          '<div class="loja">à vista · ' + esc(p.c) + '</div>' +
+        '</div>' +
+        '<a class="btn-ver" href="' + esc(p.u) + '" target="_blank" rel="noopener noreferrer">Ver oferta →</a>' +
+      '</div>' +
+    '</article>';
+  }).join("");
+}
+render();
+
+/* ==================== META-BUSCADOR ==================== */
+const state = { cpu: "", gpu: "", faixa: "", uso: "", ram: "", tipo: "pc gamer pronto", extra: "" };
+
+document.querySelectorAll("#seg-cpu button").forEach(b => {
+  b.onclick = () => {
+    document.querySelectorAll("#seg-cpu button").forEach(x => x.classList.remove("on"));
+    b.classList.add("on"); state.cpu = b.dataset.cpu; gerar();
+  };
+});
+document.querySelectorAll("#seg-gpu button").forEach(b => {
+  b.onclick = () => {
+    document.querySelectorAll("#seg-gpu button").forEach(x => x.classList.remove("on"));
+    b.classList.add("on"); state.gpu = b.dataset.gpu; gerar();
+  };
+});
+["faixa", "uso", "ram", "tipo"].forEach(id => $(id).onchange = e => { state[id] = e.target.value; gerar(); });
+$("termo-extra").oninput = e => { state.extra = e.target.value; gerar(); };
+$("gerar").onclick = gerar;
+$("limpar").onclick = () => {
+  state.cpu = ""; state.gpu = ""; state.faixa = ""; state.uso = ""; state.ram = ""; state.tipo = "pc gamer pronto"; state.extra = "";
+  ["faixa", "uso", "ram", "termo-extra"].forEach(id => $(id).value = "");
+  $("tipo").value = "pc gamer pronto";
+  document.querySelectorAll("#seg-cpu button").forEach((x, i) => x.classList.toggle("on", i === 0));
+  document.querySelectorAll("#seg-gpu button").forEach((x, i) => x.classList.toggle("on", i === 0));
+  gerar();
+};
+
+function montarTermo() {
+  const partes = [];
+  if (state.tipo) partes.push(state.tipo);
+  if (state.faixa) partes.push(state.faixa);
+  if (state.cpu) partes.push(state.cpu);
+  if (state.gpu) partes.push(state.gpu);
+  if (state.uso) partes.push(state.uso);
+  if (state.ram) partes.push(state.ram);
+  if (state.extra.trim()) partes.push(state.extra.trim());
+  if (!partes.length) partes.push("pc gamer");
+  return partes.join(" ");
+}
+
+const enc = s => encodeURIComponent(s);
+const slug = s => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const mais = s => s.replace(/ /g, "+");
+
+const LOJAS = [
+  { nome: "Pichau", desc: "Grande variedade de PCs prontos", url: q => "https://www.pichau.com.br/search?q=" + enc(q) },
+  { nome: "KaBuM!", desc: "Tem ofertas com link direto na outra aba", url: q => "https://www.kabum.com.br/busca/" + slug(q) },
+  { nome: "Magazine Luiza", desc: "Frete e parcelamento variados", url: q => "https://www.magazineluiza.com.br/busca/" + slug(q) },
+  { nome: "Amazon Brasil", desc: "Tem ofertas com link direto na outra aba", url: q => "https://www.amazon.com.br/s?k=" + mais(q) },
+  { nome: "Terabyte", desc: "Tradicional em hardware gamer", url: q => "https://www.terabyteshop.com.br/busca?str=" + mais(q) },
+  { nome: "Mercado Livre", desc: "Novos e usados, muitas ofertas", url: q => "https://lista.mercadolivre.com.br/" + slug(q) },
+  { nome: "Buscapé", desc: "Compara o preço entre lojas", url: q => "https://www.buscape.com.br/search?q=" + enc(q) },
+  { nome: "Zoom", desc: "Comparador com histórico de preço", url: q => "https://www.zoom.com.br/search?q=" + enc(q) },
+  { nome: "Google Shopping", desc: "Agrega ofertas de várias lojas", url: q => "https://www.google.com/search?tbm=shop&q=" + enc(q) }
+];
+
+function gerar() {
+  const termo = montarTermo();
+  $("lojas").innerHTML = LOJAS.map(l =>
+    '<a class="loja-card" href="' + l.url(termo) + '" target="_blank" rel="noopener noreferrer">' +
+      '<div class="nome">' + l.nome + '</div>' +
+      '<div class="desc">' + l.desc + '</div>' +
+      '<div class="go">Buscar: "' + termo + '" →</div>' +
+    '</a>'
+  ).join("");
+}
+gerar();
+</script>
+</body>
+</html>

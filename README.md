@@ -37,7 +37,37 @@ internet. Baixe, dê duplo clique e funciona — inclusive offline.
 | --- | --- |
 | `index.html` | O comparador A vs B. É a página inicial. |
 | `painel-completo.html` | Painel com gráficos (dispersão preço × desempenho, fronteira de Pareto, custo-benefício, eficiência), faixas de preço, ranking da Steam e tabela ordenável das 19 placas. |
+| `buscador-pcs.html` | Buscador de PCs gamers prontos com preço, ficha técnica, desempenho estimado e link direto da oferta (KaBuM e Amazon). |
 | `preview.png` | Imagem de prévia usada neste README. |
+
+## Buscador de PCs prontos
+
+O `buscador-pcs.html` é uma página separada, também HTML único, para quem quer
+comprar o computador inteiro em vez da placa avulsa. Ele tem duas abas:
+
+- **Ofertas com preço** — catálogo de PCs gamers prontos com preço à vista,
+  processador, RAM, disco, fonte, placa de vídeo e **link direto para o produto**
+  na loja. **Só entram máquinas com memória DDR4.** Filtros por faixa de preço,
+  marca de CPU/GPU, resolução ideal, loja, ordenação (menor preço, maior preço,
+  desempenho ou custo-benefício) e busca textual. Cada card mostra o FPS estimado
+  em 1080p, o índice de desempenho e o FPS por R$ 1.000, usando a mesma base do
+  comparador (RTX 5090 = 100).
+- **Busca por loja** — gera links de busca prontos para Pichau, KaBuM, Magalu,
+  Amazon, Terabyte, Mercado Livre, Buscapé, Zoom e Google Shopping. Serve para
+  as lojas que bloqueiam coleta automática.
+
+**De onde vêm os preços.** As ofertas são coletadas das páginas públicas de busca
+do **KaBuM!** (`__NEXT_DATA__`) e da **Amazon Brasil** (resultados de busca), com
+o link do produto montado a partir do código/ASIN. Os preços ficam embutidos no
+array `PCS` do próprio HTML e foram coletados em **23/10/2026**. Pichau, Magalu,
+Terabyte e Mercado Livre bloqueiam acesso automatizado, então não entram no
+catálogo — só na aba de busca.
+
+**Regra do catálogo: só DDR4.** O catálogo lista apenas PCs com memória **DDR4**.
+Máquinas com DDR3 ou DDR5 (ou sem geração de memória confirmada) ficam de fora,
+mesmo que o preço seja atraente. A geração é identificada pelo nome/descrição do
+produto, pela velocidade da memória (até 4000 MHz = DDR4) ou pelo chipset/CPU
+(AM4 e Intel 300/400/500 = DDR4).
 
 ## Como os números são calculados
 
